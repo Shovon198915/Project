@@ -67,7 +67,7 @@ const importData = async () => {
         const hashedPassword = await bcrypt.hash("admin123", salt); 
 
         const adminUser = {
-            email: "admin@tripdude.com",
+            email: "admin@travelloop.com",
             password: hashedPassword, // We save the scrambled version
             isAdmin: true
         };
