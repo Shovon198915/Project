@@ -28,7 +28,7 @@ function Bookings() {
     });
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/destinations')
+        fetch('https://tripdude-backend.onrender.com/api/destinations')
             .then(res => res.json())
             .then(data => setDestinations(data));
     }, []);
@@ -49,7 +49,7 @@ function Bookings() {
         }
 
         try {
-            const res = await fetch('http://localhost:5000/api/bookings', {
+            const res = await fetch('https://tripdude-backend.onrender.com/api/bookings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)

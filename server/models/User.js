@@ -16,5 +16,5 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-// --- THIS LINE WAS MISSING, CAUSING THE ERROR ---
+
 module.exports = mongoose.model('User', userSchema);

@@ -5,7 +5,7 @@ function Destinations() {
   const [destinations, setDestinations] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/destinations')
+    fetch('https://tripdude-backend.onrender.com/api/destinations')
       .then(res => res.json())
       .then(data => setDestinations(data))
       .catch(err => console.error("Error:", err));
