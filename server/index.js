@@ -19,7 +19,7 @@ app.use(cors());
 connectDB();
 
 // SECRET KEY (In a real app, hide this in .env)
-const JWT_SECRET = 'tripdude_secret_key_123';
+const JWT_SECRET = 'travelloop_secret_key_123';
 
 // ===========================
 //    AUTHENTICATION ROUTES
