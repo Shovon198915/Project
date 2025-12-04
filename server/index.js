@@ -100,3 +100,40 @@ app.post('/api/bookings', async (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// --- NEW ROUTES FOR DASHBOARDS ---
+
+// 1. GET ALL BOOKINGS (For Admin)
+app.get('/api/bookings', async (req, res) => {
+    try {
+        const bookings = await Booking.find().sort({ createdAt: -1 }); // Show newest first
+        res.json(bookings);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// 2. GET USER BOOKINGS (For My History)
+app.get('/api/bookings/user/:email', async (req, res) => {
+    try {
+        const bookings = await Booking.find({ email: req.params.email }).sort({ createdAt: -1 });
+        res.json(bookings);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// 3. UPDATE STATUS (Approve/Reject)
+app.put('/api/bookings/:id', async (req, res) => {
+    try {
+        const { status } = req.body; // We send "Confirmed" or "Cancelled"
+        const updatedBooking = await Booking.findByIdAndUpdate(
+            req.params.id, 
+            { status }, 
+            { new: true }
+        );
+        res.json(updatedBooking);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
