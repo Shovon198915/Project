@@ -10,7 +10,7 @@ function Home() {
   const [destinations, setDestinations] = useState([]);
 
   useEffect(() => {
-    fetch('https://tripdude-backend.onrender.com/api/destinations') // Make sure this is your Render Link!
+    fetch('https://project-r50m.onrender.com/api/destinations') // Make sure this is your Render Link!
       .then(res => res.json())
       .then(data => setDestinations(data))
       .catch(err => console.error("Error:", err));

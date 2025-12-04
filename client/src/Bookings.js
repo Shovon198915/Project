@@ -28,7 +28,7 @@ function Bookings() {
     });
 
     useEffect(() => {
-        fetch('https://tripdude-backend.onrender.com/api/destinations')
+        fetch('https://project-r50m.onrender.com/api/destinations')
             .then(res => res.json())
             .then(data => setDestinations(data));
     }, []);
@@ -49,7 +49,7 @@ function Bookings() {
         }
 
         try {
-            const res = await fetch('https://tripdude-backend.onrender.com/api/bookings', {
+            const res = await fetch('https://project-r50m.onrender.com/api/bookings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
