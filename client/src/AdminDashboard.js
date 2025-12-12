@@ -4,7 +4,8 @@ function AdminDashboard() {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Get your Render URL from your browser's address bar (e.g., https://project-r50m.onrender.com)
+    // IMPORTANT: Get your Render URL from your browser's address bar 
+    // Example: https://project-r50m.onrender.com 
     const RENDER_API_URL = 'https://project-r50m.onrender.com'; 
 
     // Function to fetch all bookings
@@ -66,25 +67,31 @@ function AdminDashboard() {
             <table style={styles.table}>
                 <thead>
                     <tr>
-                        <th style={styles.th}>ID</th>
+                        {/* CHANGED: Now displays sequence number (1, 2, 3...) instead of raw ID */}
+                        <th style={styles.th}>No.</th>
                         <th style={styles.th}>Customer</th>
                         <th style={styles.th}>Email</th>
+                        <th style={styles.th}>Phone</th>
                         <th style={styles.th}>Destination</th>
                         <th style={styles.th}>Guests</th>
                         <th style={styles.th}>Date</th>
+                        <th style={styles.th}>Payment</th>
                         <th style={styles.th}>Status</th>
                         <th style={styles.th}>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {bookings.map((b) => (
+                    {/* CHANGED: Using the array index (index + 1) for the No. column */}
+                    {bookings.map((b, index) => (
                         <tr key={b._id}>
-                            <td style={styles.td}>{b._id.substring(0, 5)}...</td>
+                            <td style={styles.td}>{index + 1}</td> 
                             <td style={styles.td}>{b.customerName}</td>
-                            <td style={styles.td}>{b.email}</td>
+                            <td style={styles.td}>{b.email || 'N/A'}</td>
+                            <td style={styles.td}>{b.phone}</td>
                             <td style={styles.td}>{b.destination}</td>
                             <td style={styles.td}>{b.guests}</td>
                             <td style={styles.td}>{new Date(b.date).toLocaleDateString()}</td>
+                            <td style={styles.td}>{b.paymentMethod}</td>
                             <td style={{...styles.td, color: b.status === 'Pending' ? 'orange' : b.status === 'Confirmed' ? 'green' : 'red', fontWeight: 'bold'}}>
                                 {b.status}
                             </td>
@@ -116,10 +123,10 @@ function AdminDashboard() {
 
 const styles = {
     container: { maxWidth: '1200px', margin: '50px auto', padding: '0 20px' },
-    table: { width: '100%', borderCollapse: 'collapse', marginTop: '20px' },
+    table: { width: '100%', borderCollapse: 'collapse', marginTop: '20px', fontSize: '14px' },
     th: { border: '1px solid #ddd', padding: '12px', textAlign: 'left', backgroundColor: '#f2f2f2' },
     td: { border: '1px solid #ddd', padding: '12px', textAlign: 'left' },
-    button: { color: 'white', border: 'none', padding: '8px 12px', borderRadius: '5px', cursor: 'pointer', fontSize: '14px' }
+    button: { color: 'white', border: 'none', padding: '6px 10px', borderRadius: '5px', cursor: 'pointer', fontSize: '12px' }
 };
 
 export default AdminDashboard;
