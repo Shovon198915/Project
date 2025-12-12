@@ -53,6 +53,7 @@ function Home() {
                 <p>Book your trip in just 2 clicks.</p>
             </div>
         </div>
+        
       </div>
     </div>
   );
