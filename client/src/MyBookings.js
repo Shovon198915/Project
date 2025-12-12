@@ -3,6 +3,11 @@ import React, { useEffect, useState } from 'react';
 function MyBookings() {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
+    
+    // --- NEW STATE: For confirmation message ---
+    const [confirmationMessage, setConfirmationMessage] = useState(null);
+    const [newBooking, setNewBooking] = useState(null);
+    // -------------------------------------------
 
     // IMPORTANT: Get your Render URL from your browser's address bar 
     const RENDER_API_URL = 'https://project-r50m.onrender.com'; 
@@ -10,6 +15,24 @@ function MyBookings() {
     // Get the logged-in user's email from Local Storage
     const userEmail = localStorage.getItem('userEmail');
 
+    // Effect to check for new booking confirmation message
+    useEffect(() => {
+        const confirmed = localStorage.getItem('bookingConfirmed');
+        const detailsJson = localStorage.getItem('newBookingDetails');
+
+        if (confirmed === 'true' && detailsJson) {
+            const details = JSON.parse(detailsJson);
+            
+            setConfirmationMessage("✅ Your booking has been confirmed! Details below:");
+            setNewBooking(details);
+
+            // Clean up localStorage so the message doesn't reappear on refresh
+            localStorage.removeItem('bookingConfirmed');
+            localStorage.removeItem('newBookingDetails');
+        }
+    }, []); 
+
+    // Effect to fetch user bookings
     useEffect(() => {
         if (!userEmail) {
             setLoading(false);
@@ -18,8 +41,6 @@ function MyBookings() {
 
         setLoading(true);
         
-        // --- FIX: Fetch bookings using the user's email in the path ---
-        // Assuming your backend route is correctly set up as: /api/bookings/user/:email
         fetch(`${RENDER_API_URL}/api/bookings/user/${userEmail}`) 
             .then(res => {
                 if (!res.ok) {
@@ -28,14 +49,20 @@ function MyBookings() {
                 return res.json();
             })
             .then(data => {
-                setBookings(data);
+                // Ensure the list includes the brand new booking if it was just added
+                let finalBookings = data;
+                if (newBooking && !data.some(b => b._id === newBooking._id)) {
+                    finalBookings = [newBooking, ...data]; // Add the new booking to the list
+                }
+                
+                setBookings(finalBookings);
                 setLoading(false);
             })
             .catch(err => {
                 console.error("Error fetching user bookings:", err);
                 setLoading(false);
             });
-    }, [userEmail]); // Re-run effect if userEmail changes
+    }, [userEmail, newBooking]); // Dependency on newBooking ensures it's added to the list
 
     if (loading) {
         return <h2 style={{textAlign: 'center', marginTop: '50px'}}>Loading My Trips...</h2>;
@@ -48,6 +75,23 @@ function MyBookings() {
     return (
         <div style={styles.container}>
             <h2 style={{textAlign: 'center'}}>My Trips</h2>
+
+            {/* --- CONFIRMATION BLOCK --- */}
+            {confirmationMessage && newBooking && (
+                <div style={styles.confirmationBox}>
+                    <p style={styles.confirmationText}>{confirmationMessage}</p>
+                    <div style={styles.detailsBox}>
+                        <p><strong>Destination:</strong> {newBooking.destination}</p>
+                        <p><strong>Date:</strong> {new Date(newBooking.date).toLocaleDateString()}</p>
+                        <p><strong>Guests:</strong> {newBooking.guests}</p>
+                        <p><strong>Payment:</strong> {newBooking.paymentMethod}</p>
+                        <p><strong>Status:</strong> {newBooking.status}</p>
+                    </div>
+                    <hr style={{margin: '30px 0'}} />
+                </div>
+            )}
+            {/* ---------------------------- */}
+            
             <p style={{textAlign: 'center', marginBottom: '30px', color: '#555'}}>Bookings for: **{userEmail}**</p>
 
             {bookings.length === 0 ? (
@@ -58,6 +102,7 @@ function MyBookings() {
                 <table style={styles.table}>
                     <thead>
                         <tr>
+                            <th style={styles.th}>No.</th>
                             <th style={styles.th}>Destination</th>
                             <th style={styles.th}>Date</th>
                             <th style={styles.th}>Guests</th>
@@ -66,8 +111,9 @@ function MyBookings() {
                         </tr>
                     </thead>
                     <tbody>
-                        {bookings.map((b) => (
+                        {bookings.map((b, index) => (
                             <tr key={b._id}>
+                                <td style={styles.td}>{index + 1}</td>
                                 <td style={styles.td}>{b.destination}</td>
                                 <td style={styles.td}>{new Date(b.date).toLocaleDateString()}</td>
                                 <td style={styles.td}>{b.guests}</td>
@@ -89,6 +135,29 @@ const styles = {
     table: { width: '100%', borderCollapse: 'collapse', marginTop: '20px', fontSize: '16px' },
     th: { border: '1px solid #ddd', padding: '12px', textAlign: 'left', backgroundColor: '#f2f2f2' },
     td: { border: '1px solid #ddd', padding: '12px', textAlign: 'left' },
+    // --- NEW STYLES FOR CONFIRMATION BOX ---
+    confirmationBox: {
+        backgroundColor: '#e8f5e9',
+        border: '1px solid #c8e6c9',
+        padding: '20px',
+        borderRadius: '8px',
+        marginBottom: '30px',
+        textAlign: 'center',
+    },
+    confirmationText: {
+        color: 'green',
+        fontSize: '20px',
+        fontWeight: 'bold',
+        marginBottom: '15px'
+    },
+    detailsBox: {
+        backgroundColor: '#f9f9f9',
+        padding: '15px',
+        borderRadius: '6px',
+        textAlign: 'left',
+        display: 'inline-block', // Centers the block of details
+    },
+    // ---------------------------------------
 };
 
 export default MyBookings;
