@@ -129,28 +129,31 @@ function App() {
 }
 
 const styles = {
-  // --- FIX 1: Navbar Spacing - Reduced all margins significantly ---
+  // --- FIX 1: Navbar Spacing - TIGHTEST CONFIGURATION ---
   navbar: { 
     display: 'flex', 
     justifyContent: 'flex-start', 
-    padding: '15px 15px', // FURTHER REDUCED horizontal padding (from 30px to 15px)
+    padding: '15px 15px', // Reduced overall padding
     background: '#222', 
     color: 'white', 
     alignItems: 'center' 
   },
   navLinks: {
-    marginLeft: '15px', // FURTHER REDUCED space between logo and links (from 30px to 15px)
+    display: 'flex', // Crucial for using gap
+    gap: '12px', // TIGHTEST spacing between links
+    marginLeft: '15px', // Small space between logo and link group
   },
-  link: { color: 'white', textDecoration: 'none', marginLeft: '10px', fontWeight: '500' }, // FURTHER REDUCED link spacing (from 20px to 10px)
-  adminLink: { color: '#ff5722', textDecoration: 'none', marginLeft: '10px', fontWeight: 'bold' }, // FURTHER REDUCED link spacing
-  logoutLink: { color: 'white', textDecoration: 'none', marginLeft: '10px', fontWeight: '500', cursor: 'pointer' }, // FURTHER REDUCED link spacing
+  // Removed all marginLeft from individual links, using 'gap' instead
+  link: { color: 'white', textDecoration: 'none', fontWeight: '500' }, 
+  adminLink: { color: '#ff5722', textDecoration: 'none', fontWeight: 'bold' }, 
+  logoutLink: { color: 'white', textDecoration: 'none', fontWeight: '500', cursor: 'pointer' }, 
   // --------------------------------------------------------------------------
   hero: { backgroundImage: `url(${bannerImg})`, height: '500px', backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textAlign: 'center' },
   heroOverlay: { backgroundColor: 'rgba(0, 0, 0, 0.5)', padding: '40px', borderRadius: '10px' },
   heroButton: { padding: '15px 30px', fontSize: '18px', background: '#ff5722', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px' },
-  // --- FIX 2: Reduced vertical padding on the main container ---
+  
   container: { maxWidth: '1200px', margin: '0 auto', padding: '30px 20px' }, 
-  // -------------------------------------------------------------
+  
   featureBox: { width: '300px', textAlign: 'center', padding: '20px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', borderRadius: '10px', marginBottom: '20px' }
 };
 
