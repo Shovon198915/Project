@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // 1. IMPORT NAVIGATE
+import { useNavigate } from 'react-router-dom'; 
+import loginBg from './images/img1.jpg';
 
 function Bookings() {
     const [customerName, setCustomerName] = useState('');
@@ -10,7 +11,7 @@ function Bookings() {
     const [guests, setGuests] = useState(1);
     const [paymentMethod, setPaymentMethod] = useState('bKash');
     
-    const navigate = useNavigate(); // 2. INITIALIZE NAVIGATE
+    const navigate = useNavigate(); 
 
     // IMPORTANT: Get your Render URL
     const RENDER_API_URL = 'https://project-r50m.onrender.com';
@@ -18,7 +19,6 @@ function Bookings() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // 3. Check for logged-in user email
         const userEmail = localStorage.getItem('userEmail');
         if (!userEmail) {
             alert("Please log in to make a booking.");
@@ -28,7 +28,7 @@ function Bookings() {
 
         const bookingData = {
             customerName,
-            email: userEmail, // Use the logged-in user's email
+            email: userEmail,
             phone,
             destination,
             date,
@@ -47,12 +47,14 @@ function Bookings() {
             if (res.ok) {
                 const newBookingData = await res.json();
                 
-                // --- FIX: Save Confirmation Details to Local Storage ---
+                // --- CRITICAL: Save Confirmation Details with correct keys ---
                 localStorage.setItem('bookingConfirmed', 'true');
                 localStorage.setItem('newBookingDetails', JSON.stringify(newBookingData.booking)); 
                 
-                // Navigate to the My Trips page
+                alert("✅ Booking Successful! Redirecting to My Trips...");
+                
                 navigate('/my-bookings'); 
+                window.location.reload(); 
             } else {
                 const errorData = await res.json();
                 alert("Booking Failed: " + (errorData.message || "Please check your details and try again."));
