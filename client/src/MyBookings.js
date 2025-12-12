@@ -2,25 +2,93 @@ import React, { useEffect, useState } from 'react';
 
 function MyBookings() {
     const [bookings, setBookings] = useState([]);
-    const email = localStorage.getItem('userEmail'); // Get logged in email
+    const [loading, setLoading] = useState(true);
+
+    // IMPORTANT: Get your Render URL from your browser's address bar 
+    const RENDER_API_URL = 'https://project-r50m.onrender.com'; 
+
+    // Get the logged-in user's email from Local Storage
+    const userEmail = localStorage.getItem('userEmail');
 
     useEffect(() => {
-        if (email) {
-            // Fetch bookings for this specific user email
-            fetch(`https://project-r50m.onrender.com/api/bookings/user/${email}`) // <- CHECK URL
-                .then(res => res.json())
-                .then(data => setBookings(data));
+        if (!userEmail) {
+            setLoading(false);
+            return; // Exit if no user is logged in
         }
-    }, [email]);
 
-    if (!email) return <h2 style={{textAlign:'center', marginTop:'50px'}}>Please Login to see your bookings.</h2>;
+        setLoading(true);
+        
+        // --- FIX: Fetch bookings using the user's email in the path ---
+        // Assuming your backend route is correctly set up as: /api/bookings/user/:email
+        fetch(`${RENDER_API_URL}/api/bookings/user/${userEmail}`) 
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return res.json();
+            })
+            .then(data => {
+                setBookings(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error("Error fetching user bookings:", err);
+                setLoading(false);
+            });
+    }, [userEmail]); // Re-run effect if userEmail changes
+
+    if (loading) {
+        return <h2 style={{textAlign: 'center', marginTop: '50px'}}>Loading My Trips...</h2>;
+    }
+
+    if (!userEmail) {
+        return <h2 style={{textAlign: 'center', marginTop: '50px', color: 'red'}}>Please log in to see your trips.</h2>;
+    }
 
     return (
-        <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-            <h2 style={{ textAlign: 'center' }}>My Travel History</h2>
-            {/* ... (List of bookings display goes here) ... */}
+        <div style={styles.container}>
+            <h2 style={{textAlign: 'center'}}>My Trips</h2>
+            <p style={{textAlign: 'center', marginBottom: '30px', color: '#555'}}>Bookings for: **{userEmail}**</p>
+
+            {bookings.length === 0 ? (
+                <p style={{textAlign: 'center', fontSize: '18px', color: '#ff5722'}}>
+                    You have no active or past bookings.
+                </p>
+            ) : (
+                <table style={styles.table}>
+                    <thead>
+                        <tr>
+                            <th style={styles.th}>Destination</th>
+                            <th style={styles.th}>Date</th>
+                            <th style={styles.th}>Guests</th>
+                            <th style={styles.th}>Status</th>
+                            <th style={styles.th}>Payment Method</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {bookings.map((b) => (
+                            <tr key={b._id}>
+                                <td style={styles.td}>{b.destination}</td>
+                                <td style={styles.td}>{new Date(b.date).toLocaleDateString()}</td>
+                                <td style={styles.td}>{b.guests}</td>
+                                <td style={{...styles.td, color: b.status === 'Pending' ? 'orange' : b.status === 'Confirmed' ? 'green' : 'red', fontWeight: 'bold'}}>
+                                    {b.status}
+                                </td>
+                                <td style={styles.td}>{b.paymentMethod}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
         </div>
     );
 }
+
+const styles = {
+    container: { maxWidth: '800px', margin: '50px auto', padding: '0 20px' },
+    table: { width: '100%', borderCollapse: 'collapse', marginTop: '20px', fontSize: '16px' },
+    th: { border: '1px solid #ddd', padding: '12px', textAlign: 'left', backgroundColor: '#f2f2f2' },
+    td: { border: '1px solid #ddd', padding: '12px', textAlign: 'left' },
+};
 
 export default MyBookings;
