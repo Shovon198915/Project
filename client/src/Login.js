@@ -11,8 +11,7 @@ function Login() {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            
-            // Make sure the Render URL is correct here!
+            // IMPORTANT: Ensure this Render URL is correct!
             const res = await fetch('https://project-r50m.onrender.com/api/login', { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -27,18 +26,19 @@ function Login() {
                 localStorage.setItem('token', data.token); 
                 localStorage.setItem('userEmail', email); 
                 
-                // 2. CRUCIAL FIX: Safely check and save isAdmin as a STRING
+                // 2. Save isAdmin status (converted to string)
                 if (data.user && data.user.isAdmin !== undefined) { 
-                    // .toString() converts boolean true/false to string 'true'/'false'
                     localStorage.setItem('isAdmin', data.user.isAdmin.toString()); 
                 } else {
-                    // Set a default non-admin state
-                    localStorage.setItem('isAdmin', 'false');
-                }
+                    localStorage.setItem('isAdmin', 'false');
+                }
                 // ---------------------------------------------------------------------------------
 
                 alert("✅ Login Successful!");
-                navigate('/'); // Go back to Home
+                
+                // --- FINAL FIX: Navigate home AND force a reload ---
+                navigate('/'); 
+                window.location.reload(); // THIS FORCES THE NAVBAR TO UPDATE
             } else {
                 // Show the actual message from the server (e.g., "Invalid Credentials")
                 alert("❌ " + (data.message || "Login Failed. Check your connection."));
