@@ -80,14 +80,14 @@ function Bookings() {
                 <select value={destination} onChange={(e) => setDestination(e.target.value)} required style={styles.input}>
                     <option value="">Select a Destination</option>
                     
-                    {/* --- FIX: ADDED MISSING DESTINATIONS --- */}
+                    {/* --- FINAL FIX: ALL 6 DESTINATIONS ARE HERE --- */}
                     <option value="Cox's Bazar">Cox's Bazar</option>
                     <option value="Saint Martin">Saint Martin</option>
                     <option value="Sylhet">Sylhet</option>
                     <option value="Sajek Valley">Sajek Valley</option>
                     <option value="Sundarbans">Sundarbans</option>
                     <option value="Bandarban">Bandarban</option>
-                    {/* --------------------------------------- */}
+                    {/* ----------------------------------------------- */}
                     
                 </select>
 
