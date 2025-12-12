@@ -23,7 +23,7 @@ function MyBookings() {
         if (confirmed === 'true' && detailsJson) {
             const details = JSON.parse(detailsJson);
             
-            setConfirmationMessage("✅ Your booking has been confirmed! Details below:");
+            setConfirmationMessage("✅ Your booking has been successfully placed! Confirmation details below:");
             setNewBooking(details);
 
             // Clean up localStorage so the message doesn't reappear on refresh
@@ -76,16 +76,18 @@ function MyBookings() {
         <div style={styles.container}>
             <h2 style={{textAlign: 'center'}}>My Trips</h2>
 
-            {/* --- CONFIRMATION BLOCK --- */}
+            {/* --- CONFIRMATION BLOCK (NOW DISPLAYS ALL DETAILS) --- */}
             {confirmationMessage && newBooking && (
                 <div style={styles.confirmationBox}>
                     <p style={styles.confirmationText}>{confirmationMessage}</p>
                     <div style={styles.detailsBox}>
-                        <p><strong>Destination:</strong> {newBooking.destination}</p>
-                        <p><strong>Date:</strong> {new Date(newBooking.date).toLocaleDateString()}</p>
+                        <p><strong>Customer Name:</strong> {newBooking.customerName}</p>
+                        <p><strong>Destination (Venue):</strong> {newBooking.destination}</p>
                         <p><strong>Guests:</strong> {newBooking.guests}</p>
-                        <p><strong>Payment:</strong> {newBooking.paymentMethod}</p>
-                        <p><strong>Status:</strong> {newBooking.status}</p>
+                        <p><strong>Travel Date:</strong> {new Date(newBooking.date).toLocaleDateString()}</p>
+                        <p><strong>Phone:</strong> {newBooking.phone}</p>
+                        <p><strong>Payment Method:</strong> {newBooking.paymentMethod}</p>
+                        <p><strong>Status:</strong> <span style={{color: 'orange', fontWeight: 'bold'}}>{newBooking.status} (Pending Admin Approval)</span></p>
                     </div>
                     <hr style={{margin: '30px 0'}} />
                 </div>
@@ -135,7 +137,6 @@ const styles = {
     table: { width: '100%', borderCollapse: 'collapse', marginTop: '20px', fontSize: '16px' },
     th: { border: '1px solid #ddd', padding: '12px', textAlign: 'left', backgroundColor: '#f2f2f2' },
     td: { border: '1px solid #ddd', padding: '12px', textAlign: 'left' },
-    // --- NEW STYLES FOR CONFIRMATION BOX ---
     confirmationBox: {
         backgroundColor: '#e8f5e9',
         border: '1px solid #c8e6c9',
@@ -156,8 +157,9 @@ const styles = {
         borderRadius: '6px',
         textAlign: 'left',
         display: 'inline-block', // Centers the block of details
+        margin: '0 auto',
+        minWidth: '300px'
     },
-    // ---------------------------------------
 };
 
 export default MyBookings;
