@@ -131,17 +131,17 @@ function App() {
 }
 
 const styles = {
-  // RESTORED: Uses space-between for the original wide layout, removed tight gap/margin fixes
+  // RESTORED: Uses space-between for the original wide layout, large padding
   navbar: { 
     display: 'flex', 
-    justifyContent: 'space-between', // Restores wide gap in the middle
+    justifyContent: 'space-between', // Creates the wide gap in the middle
     padding: '15px 50px', 
     background: '#222', 
     color: 'white', 
     alignItems: 'center',
     margin: 0, 
   },
-  // New containers to group links on the middle and right
+  // New containers to group links in the middle and right
   middleLinks: {
     display: 'flex',
     gap: '30px', 
@@ -152,12 +152,12 @@ const styles = {
   },
   h2: { margin: 0 }, // Removed default H2 margin
   
-  // RESTORED original large spacing on links
+  // Link styling for middle group (no need for a gap since the main div has one)
   link: { color: 'white', textDecoration: 'none', fontWeight: '500', margin: 0 },
   adminLink: { color: '#ff5722', textDecoration: 'none', fontWeight: 'bold', margin: 0 }, 
   logoutLink: { color: 'white', textDecoration: 'none', fontWeight: '500', cursor: 'pointer', margin: 0 },
 
-  // RESTORED Footer and other main container styles
+  // Other section styles
   hero: { backgroundImage: `url(${bannerImg})`, height: '500px', backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textAlign: 'center' },
   heroOverlay: { backgroundColor: 'rgba(0, 0, 0, 0.5)', padding: '40px', borderRadius: '10px' },
   heroButton: { padding: '15px 30px', fontSize: '18px', background: '#ff5722', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px' },
