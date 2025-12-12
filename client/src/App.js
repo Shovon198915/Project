@@ -53,7 +53,6 @@ function Home() {
                 <p>Book your trip in just 2 clicks.</p>
             </div>
         </div>
-        
       </div>
     </div>
   );
@@ -82,7 +81,7 @@ function App() {
         {/* Navbar */}
         <nav style={styles.navbar}>
           <h2 style={{margin:0}}>Travelloop</h2>
-          <div>
+          <div style={styles.navLinks}> {/* ADDED CONTAINER FOR LINKS */}
             <Link to="/" style={styles.link}>Home</Link>
             <Link to="/destinations" style={styles.link}>Destinations</Link>
             <Link to="/bookings" style={styles.link}>Bookings</Link>
@@ -130,16 +129,28 @@ function App() {
 }
 
 const styles = {
-  navbar: { display: 'flex', justifyContent: 'space-between', padding: '15px 50px', background: '#222', color: 'white', alignItems: 'center' },
-  link: { color: 'white', textDecoration: 'none', marginLeft: '30px', fontWeight: '500' },
-  adminLink: { color: '#ff5722', textDecoration: 'none', marginLeft: '30px', fontWeight: 'bold' }, // Admin Link Style
-  // --- NEW LOGOUT LINK STYLE ---
-  logoutLink: { color: 'white', textDecoration: 'none', marginLeft: '30px', fontWeight: '500', cursor: 'pointer' },
-  // -----------------------------
+  // --- FIX 1: Changed justifyContent to flex-start and reduced padding ---
+  navbar: { 
+    display: 'flex', 
+    justifyContent: 'flex-start', // FIX: Keeps items clustered at the start
+    padding: '15px 30px', // FIX: Reduced horizontal padding (50px -> 30px)
+    background: '#222', 
+    color: 'white', 
+    alignItems: 'center' 
+},
+  navLinks: {
+    marginLeft: '30px', // Added a space between the logo and the links group
+},
+  link: { color: 'white', textDecoration: 'none', marginLeft: '20px', fontWeight: '500' }, // Reduced link spacing
+  adminLink: { color: '#ff5722', textDecoration: 'none', marginLeft: '20px', fontWeight: 'bold' }, // Reduced link spacing
+  logoutLink: { color: 'white', textDecoration: 'none', marginLeft: '20px', fontWeight: '500', cursor: 'pointer' }, // Reduced link spacing
+  // --------------------------------------------------------------------------
   hero: { backgroundImage: `url(${bannerImg})`, height: '500px', backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textAlign: 'center' },
   heroOverlay: { backgroundColor: 'rgba(0, 0, 0, 0.5)', padding: '40px', borderRadius: '10px' },
   heroButton: { padding: '15px 30px', fontSize: '18px', background: '#ff5722', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px' },
-  container: { maxWidth: '1200px', margin: '0 auto', padding: '50px 20px' },
+  
+  container: { maxWidth: '1200px', margin: '0 auto', padding: '30px 20px' }, // FIX: Reduced 50px to 30px
+  // -------------------------------------------------------------
   featureBox: { width: '300px', textAlign: 'center', padding: '20px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', borderRadius: '10px', marginBottom: '20px' }
 };
 
