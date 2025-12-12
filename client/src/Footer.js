@@ -26,17 +26,17 @@ function Footer() {
 
 const styles = {
     footer: { backgroundColor: '#222', color: 'white', padding: '40px 0', marginTop: '50px' },
-    // --- FIX: Changed justifyContent to flex-start and added gap ---
+    // --- FIX: Changed justifyContent to flex-start and added gap for clustering ---
     container: { 
         display: 'flex', 
         justifyContent: 'flex-start', // FIX: Clustered content to the left
-        gap: '60px', // FIX: Added a fixed gap between columns (adjust 60px if needed)
+        gap: '60px', 
         flexWrap: 'wrap', 
         maxWidth: '1200px', 
         margin: '0 auto',
         paddingLeft: '20px' // Small horizontal padding
     },
-    // --- FIX: Reduced minWidth for tighter grouping ---
+    
     section: { marginBottom: '20px', minWidth: '180px' }, // Reduced from 200px
     // --------------------------------------------------
     copyright: { textAlign: 'center', marginTop: '20px', borderTop: '1px solid #444', paddingTop: '20px', fontSize: '14px' }
