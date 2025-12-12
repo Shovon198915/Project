@@ -22,118 +22,125 @@ connectDB();
 const JWT_SECRET = 'travelloop_secret_key_123';
 
 // ===========================
-//    AUTHENTICATION ROUTES
+//    AUTHENTICATION ROUTES
 // ===========================
 
 // 1. SIGN UP (Create Account)
 app.post('/api/signup', async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        // Check if user already exists
-        const existingUser = await User.findOne({ email });
-        if (existingUser) return res.status(400).json({ message: "User already exists" });
+    const { email, password } = req.body;
+    try {
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) return res.status(400).json({ message: "User already exists" });
 
-        // Scramble the password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        // Scramble the password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Save new user
-        const newUser = new User({ email, password: hashedPassword });
-        await newUser.save();
+        // Save new user
+        const newUser = new User({ email, password: hashedPassword });
+        await newUser.save();
 
-        res.json({ message: "✅ Account Created! Please Login." });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+        res.json({ message: "✅ Account Created! Please Login." });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // 2. LOGIN (Get ID Card/Token)
 app.post('/api/login', async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        const user = await User.findOne({ email });
-        if (!user) return res.status(400).json({ message: "User not found" });
+    const { email, password } = req.body;
+    try {
+        const user = await User.findOne({ email });
+        if (!user) return res.status(400).json({ message: "User not found" });
 
-        // Check password
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ message: "Invalid Credentials" });
+        // Check password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(400).json({ message: "Invalid Credentials" });
 
-        // Create Token
-        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
+        // Create Token
+        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
+        
+        // Check if user is admin to send back isAdmin flag (for frontend dashboard visibility)
+        const isAdmin = user.email === 'admin@travelloop.com'; 
 
-        res.json({ message: "Login Successful", token });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+        res.json({ message: "Login Successful", token, user: { isAdmin: isAdmin } });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // ===========================
-//      DATA ROUTES
+//      DATA ROUTES
 // ===========================
 
 // Get All Destinations
 app.get('/api/destinations', async (req, res) => {
-    const places = await Destination.find();
-    res.json(places);
+    const places = await Destination.find();
+    res.json(places);
 });
 
 // Get Single Destination (For Details Page)
 app.get('/api/destinations/:id', async (req, res) => {
-    try {
-        const place = await Destination.findById(req.params.id);
-        res.json(place);
-    } catch (err) {
-        res.status(404).json({ message: "Place not found" });
-    }
+    try {
+        const place = await Destination.findById(req.params.id);
+        res.json(place);
+    } catch (err) {
+        res.status(404).json({ message: "Place not found" });
+    }
 });
 
 // Create Booking
 app.post('/api/bookings', async (req, res) => {
-    try {
-        const newBooking = new Booking(req.body);
-        await newBooking.save();
-        res.json({ message: "Booking Successful!" });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+    try {
+        const newBooking = new Booking(req.body);
+        await newBooking.save();
+        res.json({ message: "Booking Successful!" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // --- NEW ROUTES FOR DASHBOARDS ---
 
 // 1. GET ALL BOOKINGS (For Admin)
 app.get('/api/bookings', async (req, res) => {
-    try {
-        const bookings = await Booking.find().sort({ createdAt: -1 }); // Show newest first
-        res.json(bookings);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+    try {
+        const bookings = await Booking.find().sort({ createdAt: -1 }); // Show newest first
+        res.json(bookings);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // 2. GET USER BOOKINGS (For My History)
 app.get('/api/bookings/user/:email', async (req, res) => {
-    try {
-        const bookings = await Booking.find({ email: req.params.email }).sort({ createdAt: -1 });
-        res.json(bookings);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+    try {
+        const bookings = await Booking.find({ email: req.params.email }).sort({ createdAt: -1 });
+        res.json(bookings);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // 3. UPDATE STATUS (Approve/Reject)
 app.put('/api/bookings/:id', async (req, res) => {
-    try {
-        const { status } = req.body; // We send "Confirmed" or "Cancelled"
-        const updatedBooking = await Booking.findByIdAndUpdate(
-            req.params.id, 
-            { status }, 
-            { new: true }
-        );
-        res.json(updatedBooking);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+    try {
+        const { status } = req.body; // We send "Confirmed" or "Cancelled"
+        const updatedBooking = await Booking.findByIdAndUpdate(
+            req.params.id, 
+            { status }, 
+            { new: true }
+        );
+        res.json(updatedBooking);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
+
+// =============================================
+//     SERVER START BLOCK (MOVED TO THE END)
+// =============================================
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
