@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
-import loginBg from './images/img1.jpg';
+import loginBg from './images/img1.jpg'; // Assuming you still have this unused import
 
 function Bookings() {
     const [customerName, setCustomerName] = useState('');
@@ -47,14 +47,14 @@ function Bookings() {
             if (res.ok) {
                 const newBookingData = await res.json();
                 
-                // --- CRITICAL: Save Confirmation Details with correct keys ---
+                // Save Confirmation Details with correct keys
                 localStorage.setItem('bookingConfirmed', 'true');
                 localStorage.setItem('newBookingDetails', JSON.stringify(newBookingData.booking)); 
                 
                 alert("✅ Booking Successful! Redirecting to My Trips...");
                 
+                // --- CRITICAL FIX: ONLY NAVIGATE. Do NOT reload. ---
                 navigate('/my-bookings'); 
-                window.location.reload(); 
             } else {
                 const errorData = await res.json();
                 alert("Booking Failed: " + (errorData.message || "Please check your details and try again."));

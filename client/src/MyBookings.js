@@ -26,11 +26,11 @@ function MyBookings() {
             setConfirmationMessage("✅ Your booking has been successfully placed! Confirmation details below:");
             setNewBooking(details);
 
-            // Clean up localStorage so the message doesn't reappear on refresh
+            // --- CRITICAL FIX: Clean up localStorage AFTER setting state ---
             localStorage.removeItem('bookingConfirmed');
             localStorage.removeItem('newBookingDetails');
         }
-    }, []); 
+    }, [setNewBooking]); 
 
     // Effect to fetch user bookings
     useEffect(() => {
@@ -52,7 +52,8 @@ function MyBookings() {
                 // Ensure the list includes the brand new booking if it was just added
                 let finalBookings = data;
                 if (newBooking && !data.some(b => b._id === newBooking._id)) {
-                    finalBookings = [newBooking, ...data]; // Add the new booking to the list
+                    // Prepend the new booking so it shows up at the top of the list
+                    finalBookings = [newBooking, ...data]; 
                 }
                 
                 setBookings(finalBookings);
@@ -62,7 +63,7 @@ function MyBookings() {
                 console.error("Error fetching user bookings:", err);
                 setLoading(false);
             });
-    }, [userEmail, newBooking]); // Dependency on newBooking ensures it's added to the list
+    }, [userEmail, newBooking]); 
 
     if (loading) {
         return <h2 style={{textAlign: 'center', marginTop: '50px'}}>Loading My Trips...</h2>;
@@ -156,7 +157,7 @@ const styles = {
         padding: '15px',
         borderRadius: '6px',
         textAlign: 'left',
-        display: 'inline-block', // Centers the block of details
+        display: 'inline-block', 
         margin: '0 auto',
         minWidth: '300px'
     },
