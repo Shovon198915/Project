@@ -26,19 +26,17 @@ function Footer() {
 
 const styles = {
     footer: { backgroundColor: '#222', color: 'white', padding: '40px 0', marginTop: '50px' },
-    // --- FIX: Changed justifyContent to flex-start and added gap for clustering ---
+    // FIX: Tight spacing for content clustering
     container: { 
         display: 'flex', 
-        justifyContent: 'flex-start', // FIX: Clustered content to the left
-        gap: '60px', 
+        justifyContent: 'flex-start', // Clustered content to the left
+        gap: '60px', // Fixed space between columns
         flexWrap: 'wrap', 
         maxWidth: '1200px', 
         margin: '0 auto',
-        paddingLeft: '20px' // Small horizontal padding
+        paddingLeft: '20px' 
     },
-    
-    section: { marginBottom: '20px', minWidth: '180px' }, // Reduced from 200px
-    // --------------------------------------------------
+    section: { marginBottom: '20px', minWidth: '180px' }, // Tighter column width
     copyright: { textAlign: 'center', marginTop: '20px', borderTop: '1px solid #444', paddingTop: '20px', fontSize: '14px' }
 };
 
