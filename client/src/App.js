@@ -81,7 +81,7 @@ function App() {
         {/* Navbar */}
         <nav style={styles.navbar}>
           <h2 style={{margin:0}}>Travelloop</h2>
-          <div style={styles.navLinks}> {/* ADDED CONTAINER FOR LINKS */}
+          <div style={styles.navLinks}> 
             <Link to="/" style={styles.link}>Home</Link>
             <Link to="/destinations" style={styles.link}>Destinations</Link>
             <Link to="/bookings" style={styles.link}>Bookings</Link>
@@ -129,27 +129,27 @@ function App() {
 }
 
 const styles = {
-  // --- FIX 1: Changed justifyContent to flex-start and reduced padding ---
+  // --- FIX 1: Navbar Spacing - Reduced all margins significantly ---
   navbar: { 
-    display: 'flex', 
-    justifyContent: 'flex-start', // FIX: Keeps items clustered at the start
-    padding: '15px 30px', // FIX: Reduced horizontal padding (50px -> 30px)
-    background: '#222', 
-    color: 'white', 
-    alignItems: 'center' 
-},
+    display: 'flex', 
+    justifyContent: 'flex-start', 
+    padding: '15px 15px', // FURTHER REDUCED horizontal padding (from 30px to 15px)
+    background: '#222', 
+    color: 'white', 
+    alignItems: 'center' 
+  },
   navLinks: {
-    marginLeft: '30px', // Added a space between the logo and the links group
-},
-  link: { color: 'white', textDecoration: 'none', marginLeft: '20px', fontWeight: '500' }, // Reduced link spacing
-  adminLink: { color: '#ff5722', textDecoration: 'none', marginLeft: '20px', fontWeight: 'bold' }, // Reduced link spacing
-  logoutLink: { color: 'white', textDecoration: 'none', marginLeft: '20px', fontWeight: '500', cursor: 'pointer' }, // Reduced link spacing
+    marginLeft: '15px', // FURTHER REDUCED space between logo and links (from 30px to 15px)
+  },
+  link: { color: 'white', textDecoration: 'none', marginLeft: '10px', fontWeight: '500' }, // FURTHER REDUCED link spacing (from 20px to 10px)
+  adminLink: { color: '#ff5722', textDecoration: 'none', marginLeft: '10px', fontWeight: 'bold' }, // FURTHER REDUCED link spacing
+  logoutLink: { color: 'white', textDecoration: 'none', marginLeft: '10px', fontWeight: '500', cursor: 'pointer' }, // FURTHER REDUCED link spacing
   // --------------------------------------------------------------------------
   hero: { backgroundImage: `url(${bannerImg})`, height: '500px', backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textAlign: 'center' },
   heroOverlay: { backgroundColor: 'rgba(0, 0, 0, 0.5)', padding: '40px', borderRadius: '10px' },
   heroButton: { padding: '15px 30px', fontSize: '18px', background: '#ff5722', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px' },
-  
-  container: { maxWidth: '1200px', margin: '0 auto', padding: '30px 20px' }, // FIX: Reduced 50px to 30px
+  // --- FIX 2: Reduced vertical padding on the main container ---
+  container: { maxWidth: '1200px', margin: '0 auto', padding: '30px 20px' }, 
   // -------------------------------------------------------------
   featureBox: { width: '300px', textAlign: 'center', padding: '20px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', borderRadius: '10px', marginBottom: '20px' }
 };
