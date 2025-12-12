@@ -11,26 +11,30 @@ function Login() {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            // --- FIX 1: Corrected the broken URL ---
+            
+            // Make sure the Render URL is correct here!
             const res = await fetch('https://project-r50m.onrender.com/api/login', { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
             });
             
-            // Get the data once
             const data = await res.json(); 
 
             if (res.ok) {
                 
-                // --- FIX 2 & 3: Save Token, Email, and Admin Status (CRUCIAL for Dashboards) ---
+                // 1. Save Token and Email
                 localStorage.setItem('token', data.token); 
-                localStorage.setItem('userEmail', email); // Save email for My Trips page
+                localStorage.setItem('userEmail', email); 
                 
-                // Check if user object exists before saving isAdmin flag
-                if (data.user && data.user.isAdmin !== undefined) { 
-                    localStorage.setItem('isAdmin', data.user.isAdmin); 
-                }
+                // 2. CRUCIAL FIX: Safely check and save isAdmin as a STRING
+                if (data.user && data.user.isAdmin !== undefined) { 
+                    // .toString() converts boolean true/false to string 'true'/'false'
+                    localStorage.setItem('isAdmin', data.user.isAdmin.toString()); 
+                } else {
+                    // Set a default non-admin state
+                    localStorage.setItem('isAdmin', 'false');
+                }
                 // ---------------------------------------------------------------------------------
 
                 alert("✅ Login Successful!");
