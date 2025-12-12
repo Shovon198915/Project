@@ -53,7 +53,7 @@ function Bookings() {
                 
                 alert("✅ Booking Successful! Redirecting to My Trips...");
                 
-                // --- CRITICAL FIX: ONLY NAVIGATE. Do NOT reload. ---
+                // CRITICAL FLOW FIX: Only navigate.
                 navigate('/my-bookings'); 
             } else {
                 const errorData = await res.json();
@@ -79,9 +79,16 @@ function Bookings() {
                 <label style={styles.label}>Destination</label>
                 <select value={destination} onChange={(e) => setDestination(e.target.value)} required style={styles.input}>
                     <option value="">Select a Destination</option>
+                    
+                    {/* --- FIX: ADDED MISSING DESTINATIONS --- */}
                     <option value="Cox's Bazar">Cox's Bazar</option>
                     <option value="Saint Martin">Saint Martin</option>
                     <option value="Sylhet">Sylhet</option>
+                    <option value="Sajek Valley">Sajek Valley</option>
+                    <option value="Sundarbans">Sundarbans</option>
+                    <option value="Bandarban">Bandarban</option>
+                    {/* --------------------------------------- */}
+                    
                 </select>
 
                 <label style={styles.label}>Travel Date</label>
