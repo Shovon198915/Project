@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
-import loginBg from './images/img1.jpg'; // Assuming you still have this unused import
+import loginBg from './images/img1.jpg'; 
 
-// Define the base price per person for the package
-const BASE_PRICE_PER_PERSON = 5000;
+// --- CRITICAL FIX: Define price per person based on destination ---
+const DESTINATION_PRICES = {
+    "Cox's Bazar": 6000, 
+    "Saint Martin": 8000, // Based on your requirement
+    "Sylhet": 5500,
+    "Sajek Valley": 7000,
+    "Sundarbans": 9000,
+    "Bandarban": 6500,
+    "Default": 5000 // Fallback price
+};
+// -------------------------------------------------------------------
 
 function Bookings() {
     const [customerName, setCustomerName] = useState('');
@@ -25,10 +34,11 @@ function Bookings() {
             navigate('/login');
             return;
         }
-
-        // --- NEW: Calculate Total Price ---
-        const totalPrice = BASE_PRICE_PER_PERSON * guests;
-        // ----------------------------------
+        
+        // --- FINAL PRICE CALCULATION LOGIC ---
+        const pricePerPerson = DESTINATION_PRICES[destination] || DESTINATION_PRICES["Default"];
+        const totalPrice = pricePerPerson * guests;
+        // ------------------------------------
 
         const bookingData = {
             customerName,
@@ -38,7 +48,10 @@ function Bookings() {
             date,
             guests,
             paymentMethod,
-            totalPrice: totalPrice, // CRITICAL: Pass the calculated total
+            // --- CRITICAL: Pass BOTH the total price and the individual price ---
+            pricePerPerson: pricePerPerson,
+            totalPrice: totalPrice, 
+            // ------------------------------------------------------------------
             status: 'Pending' 
         };
 
@@ -64,13 +77,10 @@ function Bookings() {
                 <select value={destination} onChange={(e) => setDestination(e.target.value)} required style={styles.input}>
                     <option value="">Select a Destination</option>
                     
-                    {/* --- ALL 6 DESTINATIONS --- */}
-                    <option value="Cox's Bazar">Cox's Bazar</option>
-                    <option value="Saint Martin">Saint Martin</option>
-                    <option value="Sylhet">Sylhet</option>
-                    <option value="Sajek Valley">Sajek Valley</option>
-                    <option value="Sundarbans">Sundarbans</option>
-                    <option value="Bandarban">Bandarban</option>
+                    {/* --- All 6 DESTINATIONS --- */}
+                    {Object.keys(DESTINATION_PRICES).filter(d => d !== 'Default').map(d => (
+                         <option key={d} value={d}>{d} ({DESTINATION_PRICES[d].toLocaleString()} BDT/person)</option>
+                    ))}
                     {/* -------------------------- */}
                     
                 </select>
@@ -88,7 +98,9 @@ function Bookings() {
                     <option value="Bank Transfer">Bank Transfer</option>
                 </select>
 
-                <button type="submit" style={styles.button}>Proceed to Payment ({BASE_PRICE_PER_PERSON * guests} BDT)</button>
+                <button type="submit" style={styles.button}>
+                    Proceed to Payment ({ (DESTINATION_PRICES[destination] || DESTINATION_PRICES["Default"]) * guests} BDT)
+                </button>
             </form>
         </div>
     );

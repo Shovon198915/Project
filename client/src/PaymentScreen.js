@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// Define the base price per person (must match the value in Bookings.js)
-const BASE_PRICE_PER_PERSON = 5000;
+// Note: BASE_PRICE_PER_PERSON is no longer needed here, but keeping it for context consistency 
+// in the styles/display if needed. We rely on bookingDetails.pricePerPerson for the correct value.
 
 function PaymentScreen() {
     const [senderPhone, setSenderPhone] = useState('');
@@ -10,7 +10,6 @@ function PaymentScreen() {
     const [bookingDetails, setBookingDetails] = useState(null);
     const navigate = useNavigate();
 
-    // IMPORTANT: Get your Render URL
     const RENDER_API_URL = 'https://project-r50m.onrender.com';
 
     useEffect(() => {
@@ -32,7 +31,6 @@ function PaymentScreen() {
             return;
         }
 
-        // Final booking object including payment details
         const finalBookingData = {
             ...bookingDetails,
             senderPhone: senderPhone, 
@@ -40,7 +38,6 @@ function PaymentScreen() {
             status: 'Pending' 
         };
 
-        // --- Step 2: Make the final API call to save the booking ---
         try {
             const res = await fetch(`${RENDER_API_URL}/api/bookings`, {
                 method: 'POST',
@@ -51,11 +48,9 @@ function PaymentScreen() {
             if (res.ok) {
                 const newBookingData = await res.json();
                 
-                // Final Success Flow: Save confirmation flags and redirect
                 localStorage.setItem('bookingConfirmed', 'true');
                 localStorage.setItem('newBookingDetails', JSON.stringify(newBookingData.booking)); 
                 
-                // Clear temporary data
                 localStorage.removeItem('tempBookingData'); 
                 
                 alert("✅ Transaction details submitted! Booking is now Pending Admin Approval.");
@@ -80,6 +75,9 @@ function PaymentScreen() {
     if (bookingDetails.paymentMethod === 'Nagad') paymentNumber = '01800000000 (Personal)'; 
     if (bookingDetails.paymentMethod === 'Bank Transfer') paymentNumber = 'Account: 1234567890 (Bank: ABC Bank)'; 
     
+    // Use the calculated values passed from Bookings.js
+    const pricePerPerson = bookingDetails.pricePerPerson || 0;
+    const totalPrice = bookingDetails.totalPrice || 0;
 
     return (
         <div style={styles.container}>
@@ -89,10 +87,10 @@ function PaymentScreen() {
                 
                 {/* --- FIX: DYNAMIC PRICE DISPLAY IS HERE --- */}
                 <h3 style={styles.totalDisplay}>
-                    Total Amount Due: {bookingDetails.totalPrice.toLocaleString()} BDT
+                    Total Amount Due: {totalPrice.toLocaleString()} BDT
                 </h3>
                 <p style={styles.detailsSummary}>
-                    ({bookingDetails.guests} Guests x {BASE_PRICE_PER_PERSON.toLocaleString()} BDT per person)
+                    ({bookingDetails.guests} Guests x {pricePerPerson.toLocaleString()} BDT per person for {bookingDetails.destination})
                 </p>
                 {/* ----------------------------- */}
 
@@ -153,7 +151,6 @@ const styles = {
         margin: '10px 0',
         fontWeight: 'bold',
     },
-    // --- STYLES FOR PRICE DISPLAY ---
     totalDisplay: {
         fontSize: '28px',
         color: '#ff5722',
@@ -164,7 +161,6 @@ const styles = {
         color: '#555',
         marginBottom: '20px',
     },
-    // --------------------------------
     form: { display: 'flex', flexDirection: 'column' },
     label: { marginTop: '15px', marginBottom: '5px', fontWeight: 'bold', color: '#333' },
     input: { padding: '10px', marginBottom: '15px', borderRadius: '5px', border: '1px solid #ddd', fontSize: '16px' },
