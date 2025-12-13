@@ -10,7 +10,6 @@ function PaymentScreen() {
     const RENDER_API_URL = 'https://project-r50m.onrender.com';
 
     useEffect(() => {
-        // Load temporary booking data when the component mounts
         const tempBookingData = localStorage.getItem('tempBookingData');
         if (tempBookingData) {
             setBookingDetails(JSON.parse(tempBookingData));
@@ -47,14 +46,13 @@ function PaymentScreen() {
                 
                 localStorage.setItem('bookingConfirmed', 'true');
                 localStorage.setItem('newBookingDetails', JSON.stringify(newBookingData.booking)); 
-                
                 localStorage.removeItem('tempBookingData'); 
                 
                 alert("✅ Transaction details submitted! Booking is now Pending Admin Approval.");
                 navigate('/my-bookings'); 
             } else {
                 const errorData = await res.json();
-                alert("Submission Failed: " + (errorData.message || "Please check your details."));
+                alert("Submission Failed: " + (errorData.message || "Server error."));
             }
         } catch (err) {
             console.error("Network error during final submission:", err);
@@ -66,13 +64,11 @@ function PaymentScreen() {
         return <h2 style={{textAlign: 'center', marginTop: '50px'}}>Loading Payment...</h2>;
     }
     
-    // Determine the payment number/account based on the selected method
     let paymentNumber = '';
     if (bookingDetails.paymentMethod === 'bKash') paymentNumber = '017XXXXXXXX (Merchant)'; 
     if (bookingDetails.paymentMethod === 'Nagad') paymentNumber = '018XXXXXXXX (Personal)'; 
     if (bookingDetails.paymentMethod === 'Bank Transfer') paymentNumber = 'Account: 1234567890 (Bank: ABC Bank)'; 
     
-    // Use the calculated values passed from Bookings.js
     const pricePerPerson = bookingDetails.pricePerPerson || 0;
     const totalPrice = bookingDetails.totalPrice || 0;
 
@@ -82,14 +78,12 @@ function PaymentScreen() {
             
             <div style={styles.paymentBox}>
                 
-                {/* --- DISPLAYING THE CALCULATED PRICE --- */}
                 <h3 style={styles.totalDisplay}>
                     Total Amount Due: {totalPrice.toLocaleString()} BDT
                 </h3>
                 <p style={styles.detailsSummary}>
                     ({bookingDetails.guests} Guests x {pricePerPerson.toLocaleString()} BDT per person for {bookingDetails.destination})
                 </p>
-                {/* ------------------------------------- */}
 
                 <p style={styles.instruction}>
                     Please send the payment using **{bookingDetails.paymentMethod}** to the following number/account:

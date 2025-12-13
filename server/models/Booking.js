@@ -11,7 +11,7 @@ const bookingSchema = new mongoose.Schema({
         required: true,
     },
     phone: {
-        type: String, // Ensure you capture the phone number from Bookings.js
+        type: String, 
         required: true,
     },
     destination: {
@@ -29,7 +29,7 @@ const bookingSchema = new mongoose.Schema({
     paymentMethod: {
         type: String,
         required: true,
-        enum: ['bKash', 'Nagad', 'Bank Transfer'], // Use enum for restricted options
+        enum: ['bKash', 'Nagad', 'Bank Transfer'], 
     },
     status: {
         type: String,
@@ -41,12 +41,12 @@ const bookingSchema = new mongoose.Schema({
     // --- CRITICAL MANUAL PAYMENT VERIFICATION FIELDS ---
     senderPhone: { 
         type: String, 
-        required: false, // Not required until submitted on PaymentScreen
+        required: false, 
         default: 'N/A'
     },
     transactionId: { 
         type: String, 
-        required: false, // Not required until submitted on PaymentScreen
+        required: false, 
         default: 'N/A'
     },
     // --- Dynamic Price Fields ---

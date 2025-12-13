@@ -6,10 +6,9 @@ function AdminDashboard() {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     
-    // IMPORTANT: Get your Render URL
+    // IMPORTANT: Ensure this Render URL is correct!
     const RENDER_API_URL = 'https://project-r50m.onrender.com';
 
-    // Check if the user is an Admin
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
 
     const fetchBookings = async () => {
@@ -22,14 +21,13 @@ function AdminDashboard() {
             const res = await fetch(`${RENDER_API_URL}/api/bookings/all`);
             
             if (!res.ok) {
-                // Handle HTTP errors
                 const errorText = await res.text();
+                // If the error happens here, the server is likely asleep or the route is crashing.
                 throw new Error(`HTTP error! Status: ${res.status}. Response: ${errorText.substring(0, 50)}...`);
             }
             
             const data = await res.json();
             
-            // Sort to show Pending bookings first
             const sortedBookings = data.sort((a, b) => {
                 if (a.status === 'Pending' && b.status !== 'Pending') return -1;
                 if (a.status !== 'Pending' && b.status === 'Pending') return 1;
@@ -40,7 +38,6 @@ function AdminDashboard() {
         } catch (err) {
             console.error("Failed to fetch bookings:", err.message);
             
-            // IMPROVED ALERT MESSAGE for server sleep
             const alertMessage = "Failed to fetch bookings. Your Render backend server might be asleep, or the API route is broken. Please visit your backend URL (in a new tab) to wake it up, and then refresh this page.";
             alert(alertMessage);
             
@@ -49,16 +46,14 @@ function AdminDashboard() {
         }
     };
 
-    // Initial fetch when the component mounts
     useEffect(() => {
         if (!isAdmin) {
-            navigate('/'); // Redirect non-admins away
+            navigate('/');
             return;
         }
         fetchBookings();
     }, [isAdmin, navigate]);
 
-    // Function to update the booking status
     const handleUpdateStatus = async (id, newStatus) => {
         if (!window.confirm(`Are you sure you want to change the status of booking ${id} to ${newStatus}?`)) {
             return;
@@ -73,7 +68,7 @@ function AdminDashboard() {
 
             if (res.ok) {
                 alert(`Status updated to ${newStatus}!`);
-                fetchBookings(); // Re-fetch the list to show the updated status
+                fetchBookings();
             } else {
                 const errorData = await res.json();
                 alert("Failed to update status: " + (errorData.message || "Server error."));
@@ -110,10 +105,8 @@ function AdminDashboard() {
                                 <th style={styles.th}>Guests</th>
                                 <th style={styles.th}>Payment Method</th>
                                 
-                                {/* --- NEW ADMIN VERIFICATION FIELDS --- */}
                                 <th style={styles.th}>Sender Phone</th>
                                 <th style={styles.th}>TxID</th>
-                                {/* -------------------------------------- */}
                                 
                                 <th style={styles.th}>Status</th>
                                 <th style={styles.th}>Action</th>
@@ -128,10 +121,8 @@ function AdminDashboard() {
                                     <td style={styles.td}>{b.guests}</td>
                                     <td style={styles.td}>{b.paymentMethod}</td>
                                     
-                                    {/* --- NEW DATA DISPLAY --- */}
                                     <td style={styles.td}>{b.senderPhone || 'N/A'}</td>
                                     <td style={styles.td}>{b.transactionId || 'N/A'}</td>
-                                    {/* -------------------------- */}
 
                                     <td style={{...styles.td, color: b.status === 'Pending' ? 'orange' : b.status === 'Confirmed' ? 'green' : 'red', fontWeight: 'bold'}}>
                                         {b.status}

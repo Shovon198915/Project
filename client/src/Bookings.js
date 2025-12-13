@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
-import loginBg from './images/img1.jpg'; // Assuming this import is still in your project
+import loginBg from './images/img1.jpg'; 
 
 // --- CRITICAL FIX: Define price per person based on destination ---
 const DESTINATION_PRICES = {
