@@ -13,8 +13,8 @@ function Bookings() {
     
     const navigate = useNavigate(); 
 
-    // IMPORTANT: Get your Render URL
-    const RENDER_API_URL = 'https://project-r50m.onrender.com';
+    // The RENDER_API_URL is no longer needed here, but kept for context if you use it elsewhere.
+    // const RENDER_API_URL = 'https://project-r50m.onrender.com';
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -37,32 +37,12 @@ function Bookings() {
             status: 'Pending' 
         };
 
-        try {
-            const res = await fetch(`${RENDER_API_URL}/api/bookings`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(bookingData),
-            });
-            
-            if (res.ok) {
-                const newBookingData = await res.json();
-                
-                // Save Confirmation Details with correct keys
-                localStorage.setItem('bookingConfirmed', 'true');
-                localStorage.setItem('newBookingDetails', JSON.stringify(newBookingData.booking)); 
-                
-                alert("✅ Booking Successful! Redirecting to My Trips...");
-                
-                // CRITICAL FLOW FIX: Only navigate.
-                navigate('/my-bookings'); 
-            } else {
-                const errorData = await res.json();
-                alert("Booking Failed: " + (errorData.message || "Please check your details and try again."));
-            }
-        } catch (err) {
-            console.error("Network error during booking:", err);
-            alert("Server Error: Cannot connect to the booking service.");
-        }
+        // --- CRITICAL FIX: Save Booking Data to LocalStorage for Payment Screen ---
+        localStorage.setItem('tempBookingData', JSON.stringify(bookingData)); 
+        
+        // Redirect to the new payment confirmation screen
+        alert("Redirecting to payment submission...");
+        navigate('/payment-confirm'); 
     };
 
     return (
@@ -80,14 +60,14 @@ function Bookings() {
                 <select value={destination} onChange={(e) => setDestination(e.target.value)} required style={styles.input}>
                     <option value="">Select a Destination</option>
                     
-                    {/* --- FINAL FIX: ALL 6 DESTINATIONS ARE HERE --- */}
+                    {/* --- ALL 6 DESTINATIONS --- */}
                     <option value="Cox's Bazar">Cox's Bazar</option>
                     <option value="Saint Martin">Saint Martin</option>
                     <option value="Sylhet">Sylhet</option>
                     <option value="Sajek Valley">Sajek Valley</option>
                     <option value="Sundarbans">Sundarbans</option>
                     <option value="Bandarban">Bandarban</option>
-                    {/* ----------------------------------------------- */}
+                    {/* -------------------------- */}
                     
                 </select>
 
@@ -104,7 +84,7 @@ function Bookings() {
                     <option value="Bank Transfer">Bank Transfer</option>
                 </select>
 
-                <button type="submit" style={styles.button}>Confirm Booking</button>
+                <button type="submit" style={styles.button}>Proceed to Payment</button>
             </form>
         </div>
     );

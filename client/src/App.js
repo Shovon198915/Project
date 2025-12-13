@@ -6,163 +6,159 @@ import Destinations from './Destinations';
 import Signup from './Signup'; 
 import bannerImg from './images/img1.jpg'; 
 
-// --- NEW IMPORTS: Dashboards and Footer ---
+// --- NEW IMPORTS: Dashboards, Footer, and PaymentScreen ---
 import AdminDashboard from './AdminDashboard';
 import MyBookings from './MyBookings';
 import Footer from './Footer';
-// ------------------------------------------
+import PaymentScreen from './PaymentScreen'; // CRITICAL: Import the new component
+// -----------------------------------------------------------
 
 function Home() {
-  const [destinations, setDestinations] = useState([]);
+    // Note: The Home component structure is provided as context.
+    // If you need to make changes here, you should do so based on your functional requirements.
+    const [destinations, setDestinations] = useState([]);
 
-  useEffect(() => {
-    // This is the live Render URL
-    fetch('https://project-r50m.onrender.com/api/destinations') 
-      .then(res => res.json())
-      .then(data => setDestinations(data))
-      .catch(err => console.error("Error:", err));
-  }, []);
+    // Assuming this API call is still functional
+    useEffect(() => {
+      fetch('https://project-r50m.onrender.com/api/destinations') 
+        .then(res => res.json())
+        .then(data => setDestinations(data))
+        .catch(err => console.error("Error:", err));
+    }, []);
 
-  return (
-    <div>
-      {/* HERO SECTION */}
-      <div style={styles.hero}>
-        <div style={styles.heroOverlay}>
-          <h1 style={{ fontSize: '50px', margin: '0' }}>Welcome to Travelloop</h1>
-          <p style={{ fontSize: '20px', marginTop: '10px' }}>Your Personal Travel Companion in Bangladesh</p>
-          <Link to="/destinations">
-            <button style={styles.heroButton}>Explore Destinations</button>
-          </Link>
-        </div>
-      </div>
+    return (
+        <div>
+            {/* HERO SECTION */}
+            <div style={styles.hero}>
+                <div style={styles.heroOverlay}>
+                    <h1 style={{ fontSize: '50px', margin: '0' }}>Welcome to Travelloop</h1>
+                    <p style={{ fontSize: '20px', marginTop: '10px' }}>Your Personal Travel Companion in Bangladesh</p>
+                    <Link to="/destinations">
+                        <button style={styles.heroButton}>Explore Destinations</button>
+                    </Link>
+                </div>
+            </div>
 
-      {/* INTRO SECTION */}
-      <div style={styles.container}>
-        <h2 style={{ textAlign: 'center' }}>Why Choose Us?</h2>
-        <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '30px', flexWrap: 'wrap' }}>
-            <div style={styles.featureBox}>
-                <h3>🌍 6 Top Locations</h3>
-                <p>We cover the best spots from Hills to Sea.</p>
-            </div>
-            <div style={styles.featureBox}>
-                <h3>💰 Best Prices</h3>
-                <p>Affordable packages for students and families.</p>
-            </div>
-            <div style={styles.featureBox}>
-                <h3>📅 Easy Booking</h3>
-                <p>Book your trip in just 2 clicks.</p>
-            </div>
-        </div>
-      </div>
-    </div>
-  );
+            {/* INTRO SECTION */}
+            <div style={styles.container}>
+                <h2 style={{ textAlign: 'center' }}>Why Choose Us?</h2>
+                <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '30px', flexWrap: 'wrap' }}>
+                    <div style={styles.featureBox}>
+                        <h3>🌍 6 Top Locations</h3>
+                        <p>We cover the best spots from Hills to Sea.</p>
+                    </div>
+                    <div style={styles.featureBox}>
+                        <h3>💰 Best Prices</h3>
+                        <p>Affordable packages for students and families.</p>
+                    </div>
+                    <div style={styles.featureBox}>
+                        <h3>📅 Easy Booking</h3>
+                        <p>Book your trip in just 2 clicks.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 function App() {
-  // Check user status from local storage
-  const isAdmin = localStorage.getItem('isAdmin') === 'true';
-  const isLoggedIn = localStorage.getItem('token'); // Check if a token exists
+    // Check user status from local storage
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    const isLoggedIn = localStorage.getItem('token'); // Check if a token exists
 
-  // --- LOGOUT FUNCTION (Keep this!) ---
-  const handleLogout = () => {
-      // Remove all user-related items from storage
-      localStorage.removeItem('token');
-      localStorage.removeItem('userEmail');
-      localStorage.removeItem('isAdmin');
-      
-      // Force the browser to navigate to Home and refresh the Navbar
-      window.location.href = '/'; 
-  };
-  // -------------------------------------
+    // --- LOGOUT FUNCTION ---
+    const handleLogout = () => {
+        // Remove all user-related items from storage
+        localStorage.removeItem('token');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('isAdmin');
+        
+        // Force the browser to navigate to Home and refresh the Navbar
+        window.location.href = '/'; 
+    };
+    // -----------------------
 
-  return (
-    <Router>
-      <div style={{ fontFamily: 'Arial, sans-serif' }}>
-        {/* Navbar */}
-        <nav style={styles.navbar}>
-          <h2 style={styles.h2}>Travelloop</h2>
-          
-          {/* MIDDLE GROUP (Home, Destinations, Bookings) */}
-          <div style={styles.middleLinks}> 
-            <Link to="/" style={styles.link}>Home</Link>
-            <Link to="/destinations" style={styles.link}>Destinations</Link>
-            <Link to="/bookings" style={styles.link}>Bookings</Link>
-          </div>
-          
-          {/* RIGHT GROUP (My Trips, Admin, Login/Logout) */}
-          <div style={styles.rightLinks}>
+    return (
+        <Router>
+            <div style={{ fontFamily: 'Arial, sans-serif' }}>
+                {/* Navbar (Ensuring wide-gap layout) */}
+                <nav style={styles.navbar}>
+                    <h2 style={styles.h2}>Travelloop</h2>
+                    
+                    {/* LINKS CONTAINER (Single element for right-side clustering) */}
+                    <div style={styles.navLinks}> 
+                        
+                        {/* Middle Links */}
+                        <Link to="/" style={styles.link}>Home</Link>
+                        <Link to="/destinations" style={styles.link}>Destinations</Link>
+                        <Link to="/bookings" style={styles.link}>Bookings</Link>
+                        
+                        {/* Conditional Links */}
+                        {isLoggedIn && <Link to="/my-bookings" style={styles.link}>My Trips</Link>}
+                        {isAdmin && <Link to="/admin" style={styles.adminLink}>Admin</Link>}
+
+                        {/* Login/Logout Links */}
+                        {isLoggedIn ? (
+                            // Show Log Out if user is logged in
+                            <a onClick={handleLogout} style={styles.logoutLink}>Log Out</a> 
+                        ) : (
+                            // Show Login/Signup if user is logged out
+                            <>
+                                <Link to="/login" style={styles.link}>Login</Link>
+                                <Link to="/signup" style={{...styles.link, color: '#ffcc00'}}>Sign Up</Link>
+                            </>
+                        )}
+                    </div>
+                </nav>
+
+                {/* Routes */}
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/destinations" element={<Destinations />} />
+                    <Route path="/bookings" element={<Bookings />} />
+                    
+                    {/* CRITICAL: NEW ROUTE FOR PAYMENT SCREEN */}
+                    <Route path="/payment-confirm" element={<PaymentScreen />} />
+                    
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                    
+                    <Route path="/admin" element={<AdminDashboard />} />
+                    <Route path="/my-bookings" element={<MyBookings />} />
+                </Routes>
+            </div>
             
-            {isLoggedIn && <Link to="/my-bookings" style={styles.link}>My Trips</Link>}
-            {isAdmin && <Link to="/admin" style={styles.adminLink}>Admin</Link>}
-
-            {isLoggedIn ? (
-                // Show Log Out if user is logged in
-                <a onClick={handleLogout} style={styles.logoutLink}>Log Out</a> 
-            ) : (
-                // Show Login/Signup if user is logged out
-                <>
-                    <Link to="/login" style={styles.link}>Login</Link>
-                    <Link to="/signup" style={{...styles.link, color: '#ffcc00'}}>Sign Up</Link>
-                </>
-            )}
-          </div>
-        </nav>
-
-        {/* Routes */}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/destinations" element={<Destinations />} />
-          <Route path="/bookings" element={<Bookings />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          
-          {/* NEW ROUTE: Admin Dashboard */}
-          <Route path="/admin" element={<AdminDashboard />} />
-          
-          {/* NEW ROUTE: My Bookings */}
-          <Route path="/my-bookings" element={<MyBookings />} />
-        </Routes>
-      </div>
-      
-      {/* FINAL STEP: ADD FOOTER */}
-      <Footer />
-    </Router>
-  );
+            <Footer />
+        </Router>
+    );
 }
 
 const styles = {
-  // RESTORED: Uses space-between for the original wide layout, large padding
-  navbar: { 
-    display: 'flex', 
-    justifyContent: 'space-between', // Creates the wide gap in the middle
-    padding: '15px 50px', 
-    background: '#222', 
-    color: 'white', 
-    alignItems: 'center',
-    margin: 0, 
-  },
-  // New containers to group links in the middle and right
-  middleLinks: {
-    display: 'flex',
-    gap: '30px', 
-  },
-  rightLinks: {
-    display: 'flex',
-    gap: '30px', 
-  },
-  h2: { margin: 0 }, // Removed default H2 margin
-  
-  // Link styling for middle group (no need for a gap since the main div has one)
-  link: { color: 'white', textDecoration: 'none', fontWeight: '500', margin: 0 },
-  adminLink: { color: '#ff5722', textDecoration: 'none', fontWeight: 'bold', margin: 0 }, 
-  logoutLink: { color: 'white', textDecoration: 'none', fontWeight: '500', cursor: 'pointer', margin: 0 },
+    // Navbar styles for wide layout
+    navbar: { 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        padding: '15px 50px', 
+        background: '#222', 
+        color: 'white', 
+        alignItems: 'center',
+        margin: 0, 
+    },
+    navLinks: {
+        display: 'flex',
+        gap: '30px', 
+    },
+    h2: { margin: 0 }, 
+    link: { color: 'white', textDecoration: 'none', fontWeight: '500', margin: 0 },
+    adminLink: { color: '#ff5722', textDecoration: 'none', fontWeight: 'bold', margin: 0 }, 
+    logoutLink: { color: 'white', textDecoration: 'none', fontWeight: '500', cursor: 'pointer', margin: 0 },
 
-  // Other section styles
-  hero: { backgroundImage: `url(${bannerImg})`, height: '500px', backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textAlign: 'center' },
-  heroOverlay: { backgroundColor: 'rgba(0, 0, 0, 0.5)', padding: '40px', borderRadius: '10px' },
-  heroButton: { padding: '15px 30px', fontSize: '18px', background: '#ff5722', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px' },
-  container: { maxWidth: '1200px', margin: '0 auto', padding: '50px 20px' },
-  featureBox: { width: '300px', textAlign: 'center', padding: '20px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', borderRadius: '10px', marginBottom: '20px' }
+    // Other section styles
+    hero: { backgroundImage: `url(${bannerImg})`, height: '500px', backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textAlign: 'center' },
+    heroOverlay: { backgroundColor: 'rgba(0, 0, 0, 0.5)', padding: '40px', borderRadius: '10px' },
+    heroButton: { padding: '15px 30px', fontSize: '18px', background: '#ff5722', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px' },
+    container: { maxWidth: '1200px', margin: '0 auto', padding: '50px 20px' },
+    featureBox: { width: '300px', textAlign: 'center', padding: '20px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', borderRadius: '10px', marginBottom: '20px' }
 };
 
 export default App;
