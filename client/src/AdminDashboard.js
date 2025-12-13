@@ -10,6 +10,7 @@ function AdminDashboard() {
     const RENDER_API_URL = 'https://project-r50m.onrender.com';
 
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    const token = localStorage.getItem('token'); // <-- NEW: Get the JWT token
 
     const fetchBookings = async () => {
         if (!isAdmin) {
@@ -22,7 +23,6 @@ function AdminDashboard() {
             
             if (!res.ok) {
                 const errorText = await res.text();
-                // If the error happens here, the server is likely asleep or the route is crashing.
                 throw new Error(`HTTP error! Status: ${res.status}. Response: ${errorText.substring(0, 50)}...`);
             }
             
@@ -54,7 +54,14 @@ function AdminDashboard() {
         fetchBookings();
     }, [isAdmin, navigate]);
 
+    // --- CRITICAL FIX APPLIED HERE ---
     const handleUpdateStatus = async (id, newStatus) => {
+        if (!token) {
+            alert("Security Error: Admin session expired. Please log in again.");
+            navigate('/login');
+            return;
+        }
+        
         if (!window.confirm(`Are you sure you want to change the status of booking ${id} to ${newStatus}?`)) {
             return;
         }
@@ -62,7 +69,11 @@ function AdminDashboard() {
         try {
             const res = await fetch(`${RENDER_API_URL}/api/bookings/${id}/status`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    // FIX: Add Authorization header with the JWT token
+                    'Authorization': `Bearer ${token}` 
+                },
                 body: JSON.stringify({ status: newStatus }),
             });
 
@@ -71,10 +82,16 @@ function AdminDashboard() {
                 fetchBookings();
             } else {
                 const errorData = await res.json();
-                alert("Failed to update status: " + (errorData.message || "Server error."));
+                // Improved error message for unauthorized attempts
+                if (res.status === 401) {
+                    alert("Authorization Failed: You may not have admin privileges or your token is expired.");
+                } else {
+                    alert("Failed to update status: " + (errorData.message || "Server error."));
+                }
             }
         } catch (err) {
             console.error("Error updating status:", err);
+            alert("A network error occurred while updating status.");
         }
     };
 
