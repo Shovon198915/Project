@@ -1,47 +1,65 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function MyBookings() {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
-    // IMPORTANT: Get your Render URL from your browser's address bar 
+    // IMPORTANT: Get your Render URL
     const RENDER_API_URL = 'https://project-r50m.onrender.com'; 
 
-    // Get the logged-in user's email from Local Storage
+    // Get the logged-in user's credentials from Local Storage
     const userEmail = localStorage.getItem('userEmail');
+    const token = localStorage.getItem('token'); // <-- CRITICAL: Get the token
 
     useEffect(() => {
-        if (!userEmail) {
+        if (!userEmail || !token) { // Ensure both email and token are present
             setLoading(false);
+            if (!userEmail) {
+                // If email is missing (but token might not be), redirect to login for safety
+                navigate('/login');
+            }
             return; 
         }
 
         setLoading(true);
         
         // Fetch bookings using the user's email in the path
-        fetch(`${RENDER_API_URL}/api/bookings/user/${userEmail}`) 
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error('Network response was not ok');
+        fetch(`${RENDER_API_URL}/api/bookings/user/${userEmail}`, {
+            method: 'GET',
+            headers: {
+                // CRITICAL FIX: Send the JWT token in the Authorization header
+                'Authorization': `Bearer ${token}`, 
+            },
+        }) 
+        .then(res => {
+            if (!res.ok) {
+                // Handle 401 Unauthorized specifically
+                if (res.status === 401) {
+                    throw new Error('Unauthorized. Please log in again.');
                 }
-                return res.json();
-            })
-            .then(data => {
-                setBookings(data);
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error("Error fetching user bookings:", err);
-                setLoading(false);
-            });
-    }, [userEmail]); // Fetch runs every time the component mounts or user changes
+                throw new Error('Failed to fetch bookings. Server error.');
+            }
+            return res.json();
+        })
+        .then(data => {
+            setBookings(data);
+            setLoading(false);
+        })
+        .catch(err => {
+            console.error("Error fetching user bookings:", err.message);
+            alert(`Error: ${err.message}`); // Inform the user about the specific error
+            setLoading(false);
+        });
+    }, [userEmail, token, navigate]); // Depend on userEmail and token
 
     if (loading) {
         return <h2 style={{textAlign: 'center', marginTop: '50px'}}>Loading My Trips...</h2>;
     }
 
-    if (!userEmail) {
-        return <h2 style={{textAlign: 'center', marginTop: '50px', color: 'red'}}>Please log in to see your trips.</h2>;
+    if (!userEmail || !token) {
+        return <h2 style={{textAlign: 'center', marginTop: '50px', color: 'red'}}>Session expired. Please log in to see your trips.</h2>;
     }
 
     return (
@@ -54,41 +72,51 @@ function MyBookings() {
                     You have no active or past bookings.
                 </p>
             ) : (
-                <table style={styles.table}>
-                    <thead>
-                        <tr>
-                            <th style={styles.th}>No.</th>
-                            <th style={styles.th}>Destination (Venue)</th>
-                            <th style={styles.th}>Date</th>
-                            <th style={styles.th}>Guests</th>
-                            <th style={styles.th}>Payment Method</th>
-                            <th style={styles.th}>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {bookings.map((b, index) => (
-                            <tr key={b._id}>
-                                <td style={styles.td}>{index + 1}</td>
-                                <td style={styles.td}>{b.destination}</td>
-                                <td style={styles.td}>{new Date(b.date).toLocaleDateString()}</td>
-                                <td style={styles.td}>{b.guests}</td>
-                                <td style={styles.td}>{b.paymentMethod}</td>
-                                {/* --- CRITICAL FIX: DYNAMIC STATUS DISPLAY --- */}
-                                <td style={{...styles.td, color: b.status === 'Pending' ? 'orange' : b.status === 'Confirmed' ? 'green' : 'red', fontWeight: 'bold'}}>
-                                    {b.status}
-                                </td>
+                <div style={{overflowX: 'auto'}}> 
+                    <table style={styles.table}>
+                        <thead>
+                            <tr>
+                                <th style={styles.th}>No.</th>
+                                <th style={styles.th}>Destination (Guests)</th>
+                                <th style={styles.th}>Travel Date</th>
+                                <th style={styles.th}>Total Price</th>
+                                <th style={styles.th}>Payment Method / TxID</th>
+                                <th style={styles.th}>Status</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {bookings.map((b, index) => (
+                                <tr key={b._id}>
+                                    <td style={styles.td}>{index + 1}</td>
+                                    <td style={styles.td}>{b.destination} ({b.guests})</td>
+                                    <td style={styles.td}>{new Date(b.date).toLocaleDateString()}</td>
+                                    
+                                    {/* FIX: Display the price */}
+                                    <td style={{...styles.td, fontWeight: 'bold'}}>{b.totalPrice ? b.totalPrice.toLocaleString() + ' BDT' : 'N/A'}</td>
+
+                                    {/* FIX: Display verification details */}
+                                    <td style={styles.td}>
+                                        **{b.paymentMethod}** <br/>
+                                        TxID: *{b.transactionId || 'Awaiting Payment'}*
+                                    </td>
+                                    
+                                    {/* DYNAMIC STATUS DISPLAY */}
+                                    <td style={{...styles.td, color: b.status === 'Pending' ? 'orange' : b.status === 'Confirmed' ? 'green' : 'red', fontWeight: 'bold'}}>
+                                        {b.status}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             )}
         </div>
     );
 }
 
 const styles = {
-    container: { maxWidth: '800px', margin: '50px auto', padding: '0 20px' },
-    table: { width: '100%', borderCollapse: 'collapse', marginTop: '20px', fontSize: '16px' },
+    container: { maxWidth: '1000px', margin: '50px auto', padding: '0 20px' },
+    table: { width: '100%', borderCollapse: 'collapse', marginTop: '20px', fontSize: '15px', minWidth: '700px' },
     th: { border: '1px solid #ddd', padding: '12px', textAlign: 'left', backgroundColor: '#f2f2f2' },
     td: { border: '1px solid #ddd', padding: '12px', textAlign: 'left' },
 };
