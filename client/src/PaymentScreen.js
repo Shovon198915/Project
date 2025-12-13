@@ -82,14 +82,14 @@ function PaymentScreen() {
             
             <div style={styles.paymentBox}>
                 
-                {/* --- FIX: DYNAMIC PRICE DISPLAY IS HERE --- */}
+                {/* --- DISPLAYING THE CALCULATED PRICE --- */}
                 <h3 style={styles.totalDisplay}>
                     Total Amount Due: {totalPrice.toLocaleString()} BDT
                 </h3>
                 <p style={styles.detailsSummary}>
                     ({bookingDetails.guests} Guests x {pricePerPerson.toLocaleString()} BDT per person for {bookingDetails.destination})
                 </p>
-                {/* ----------------------------- */}
+                {/* ------------------------------------- */}
 
                 <p style={styles.instruction}>
                     Please send the payment using **{bookingDetails.paymentMethod}** to the following number/account:
