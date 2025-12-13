@@ -106,7 +106,7 @@ function Bookings() {
                 <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} required style={styles.input}>
                     <option value="bKash">bKash</option>
                     <option value="Nagad">Nagad</option>
-                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Bank Transfer">Card</option>
                 </select>
 
                 <button type="submit" style={styles.button}>
