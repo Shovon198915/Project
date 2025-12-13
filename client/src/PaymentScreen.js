@@ -79,8 +79,8 @@ function PaymentScreen() {
     // ... (rest of the component remains the same, displaying form)
     
     let paymentNumber = '';
-    if (bookingDetails.paymentMethod === 'bKash') paymentNumber = '017XXXXXXXX (Merchant)'; 
-    if (bookingDetails.paymentMethod === 'Nagad') paymentNumber = '018XXXXXXXX (Personal)'; 
+    if (bookingDetails.paymentMethod === 'bKash') paymentNumber = '01711223344 (Merchant)'; 
+    if (bookingDetails.paymentMethod === 'Nagad') paymentNumber = '01855667788 (Personal)'; 
     if (bookingDetails.paymentMethod === 'Bank Transfer') paymentNumber = 'Account: 1234567890 (Bank: ABC Bank)'; 
     
     const pricePerPerson = bookingDetails.pricePerPerson || 0;
