@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// Define the base price per person (must match the value in Bookings.js)
+const BASE_PRICE_PER_PERSON = 5000;
+
 function PaymentScreen() {
     const [senderPhone, setSenderPhone] = useState('');
     const [transactionId, setTransactionId] = useState('');
@@ -16,7 +19,7 @@ function PaymentScreen() {
         if (tempBookingData) {
             setBookingDetails(JSON.parse(tempBookingData));
         } else {
-            alert("No pending booking found. Starting over.");
+            alert("No pending booking found. Please start a new booking.");
             navigate('/bookings');
         }
     }, [navigate]);
@@ -25,18 +28,19 @@ function PaymentScreen() {
         e.preventDefault();
 
         if (!bookingDetails) {
-            alert("Error: Booking details missing.");
+            alert("Error: Booking details missing. Please restart the booking process.");
             return;
         }
 
         // Final booking object including payment details
         const finalBookingData = {
             ...bookingDetails,
-            senderPhone: senderPhone, // Add sender phone for manual verification
-            transactionId: transactionId, // Add transaction ID
-            status: 'Pending' 
+            senderPhone: senderPhone, // Added sender phone for manual verification
+            transactionId: transactionId, // Added transaction ID
+            status: 'Pending' // Final status before admin approval
         };
 
+        // --- Step 2: Make the final API call to save the booking ---
         try {
             const res = await fetch(`${RENDER_API_URL}/api/bookings`, {
                 method: 'POST',
@@ -47,7 +51,7 @@ function PaymentScreen() {
             if (res.ok) {
                 const newBookingData = await res.json();
                 
-                // --- Final Success Flow: Save confirmation and redirect ---
+                // Final Success Flow: Save confirmation flags and redirect
                 localStorage.setItem('bookingConfirmed', 'true');
                 localStorage.setItem('newBookingDetails', JSON.stringify(newBookingData.booking)); 
                 
@@ -70,10 +74,10 @@ function PaymentScreen() {
         return <h2 style={{textAlign: 'center', marginTop: '50px'}}>Loading Payment...</h2>;
     }
     
-    // Determine the payment number based on the selected method
+    // Determine the payment number/account based on the selected method
     let paymentNumber = '';
-    if (bookingDetails.paymentMethod === 'bKash') paymentNumber = '017XXXXXXXX'; // Replace with your number
-    if (bookingDetails.paymentMethod === 'Nagad') paymentNumber = '018XXXXXXXX'; // Replace with your number
+    if (bookingDetails.paymentMethod === 'bKash') paymentNumber = '017XXXXXXXX (Merchant)'; // Replace with your number
+    if (bookingDetails.paymentMethod === 'Nagad') paymentNumber = '018XXXXXXXX (Personal)'; // Replace with your number
     if (bookingDetails.paymentMethod === 'Bank Transfer') paymentNumber = 'Account: 1234567890 (Bank: ABC Bank)'; // Replace with your account details
     
 
@@ -82,6 +86,15 @@ function PaymentScreen() {
             <h2 style={{textAlign: 'center'}}>Complete Your Payment</h2>
             
             <div style={styles.paymentBox}>
+                {/* --- DYNAMIC PRICE DISPLAY --- */}
+                <h3 style={styles.totalDisplay}>
+                    Total Amount Due: {bookingDetails.totalPrice.toLocaleString()} BDT
+                </h3>
+                <p style={styles.detailsSummary}>
+                    ({bookingDetails.guests} Guests x {BASE_PRICE_PER_PERSON.toLocaleString()} BDT per person)
+                </p>
+                {/* ----------------------------- */}
+
                 <p style={styles.instruction}>
                     Please send the payment using **{bookingDetails.paymentMethod}** to the following number/account:
                 </p>
@@ -90,11 +103,11 @@ function PaymentScreen() {
                 <p style={{color: 'red'}}>**IMPORTANT:** Only proceed after sending the money to this number.</p>
             </div>
             
-            <h3 style={{marginTop: '30px', borderBottom: '1px solid #ddd', paddingBottom: '10px'}}>Step 2: Submit Details</h3>
+            <h3 style={{marginTop: '30px', borderBottom: '1px solid #ddd', paddingBottom: '10px'}}>Step 2: Submit Transaction Details</h3>
 
             <form onSubmit={handlePaymentSubmit} style={styles.form}>
                 
-                <label style={styles.label}>Transaction ID (TxID)</label>
+                <label style={styles.label}>Transaction ID (TxID) from {bookingDetails.paymentMethod}</label>
                 <input 
                     type="text" 
                     value={transactionId} 
@@ -138,6 +151,16 @@ const styles = {
         color: '#222',
         margin: '10px 0',
         fontWeight: 'bold',
+    },
+    totalDisplay: {
+        fontSize: '28px',
+        color: '#ff5722',
+        marginBottom: '5px',
+    },
+    detailsSummary: {
+        fontSize: '14px',
+        color: '#555',
+        marginBottom: '20px',
     },
     form: { display: 'flex', flexDirection: 'column' },
     label: { marginTop: '15px', marginBottom: '5px', fontWeight: 'bold', color: '#333' },

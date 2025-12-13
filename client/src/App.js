@@ -6,19 +6,16 @@ import Destinations from './Destinations';
 import Signup from './Signup'; 
 import bannerImg from './images/img1.jpg'; 
 
-// --- NEW IMPORTS: Dashboards, Footer, and PaymentScreen ---
+// --- NEW IMPORTS ---
 import AdminDashboard from './AdminDashboard';
 import MyBookings from './MyBookings';
 import Footer from './Footer';
 import PaymentScreen from './PaymentScreen'; // CRITICAL: Import the new component
-// -----------------------------------------------------------
+// -------------------
 
 function Home() {
-    // Note: The Home component structure is provided as context.
-    // If you need to make changes here, you should do so based on your functional requirements.
     const [destinations, setDestinations] = useState([]);
 
-    // Assuming this API call is still functional
     useEffect(() => {
       fetch('https://project-r50m.onrender.com/api/destinations') 
         .then(res => res.json())
@@ -62,47 +59,33 @@ function Home() {
 }
 
 function App() {
-    // Check user status from local storage
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
-    const isLoggedIn = localStorage.getItem('token'); // Check if a token exists
+    const isLoggedIn = localStorage.getItem('token');
 
-    // --- LOGOUT FUNCTION ---
     const handleLogout = () => {
-        // Remove all user-related items from storage
         localStorage.removeItem('token');
         localStorage.removeItem('userEmail');
         localStorage.removeItem('isAdmin');
-        
-        // Force the browser to navigate to Home and refresh the Navbar
         window.location.href = '/'; 
     };
-    // -----------------------
 
     return (
         <Router>
             <div style={{ fontFamily: 'Arial, sans-serif' }}>
-                {/* Navbar (Ensuring wide-gap layout) */}
                 <nav style={styles.navbar}>
                     <h2 style={styles.h2}>Travelloop</h2>
                     
-                    {/* LINKS CONTAINER (Single element for right-side clustering) */}
                     <div style={styles.navLinks}> 
-                        
-                        {/* Middle Links */}
                         <Link to="/" style={styles.link}>Home</Link>
                         <Link to="/destinations" style={styles.link}>Destinations</Link>
                         <Link to="/bookings" style={styles.link}>Bookings</Link>
                         
-                        {/* Conditional Links */}
                         {isLoggedIn && <Link to="/my-bookings" style={styles.link}>My Trips</Link>}
                         {isAdmin && <Link to="/admin" style={styles.adminLink}>Admin</Link>}
 
-                        {/* Login/Logout Links */}
                         {isLoggedIn ? (
-                            // Show Log Out if user is logged in
                             <a onClick={handleLogout} style={styles.logoutLink}>Log Out</a> 
                         ) : (
-                            // Show Login/Signup if user is logged out
                             <>
                                 <Link to="/login" style={styles.link}>Login</Link>
                                 <Link to="/signup" style={{...styles.link, color: '#ffcc00'}}>Sign Up</Link>
@@ -111,7 +94,6 @@ function App() {
                     </div>
                 </nav>
 
-                {/* Routes */}
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/destinations" element={<Destinations />} />
@@ -134,7 +116,6 @@ function App() {
 }
 
 const styles = {
-    // Navbar styles for wide layout
     navbar: { 
         display: 'flex', 
         justifyContent: 'space-between', 
@@ -153,7 +134,6 @@ const styles = {
     adminLink: { color: '#ff5722', textDecoration: 'none', fontWeight: 'bold', margin: 0 }, 
     logoutLink: { color: 'white', textDecoration: 'none', fontWeight: '500', cursor: 'pointer', margin: 0 },
 
-    // Other section styles
     hero: { backgroundImage: `url(${bannerImg})`, height: '500px', backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textAlign: 'center' },
     heroOverlay: { backgroundColor: 'rgba(0, 0, 0, 0.5)', padding: '40px', borderRadius: '10px' },
     heroButton: { padding: '15px 30px', fontSize: '18px', background: '#ff5722', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px' },

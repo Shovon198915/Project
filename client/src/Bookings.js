@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import loginBg from './images/img1.jpg'; // Assuming you still have this unused import
 
+// Define the base price per person for the package
+const BASE_PRICE_PER_PERSON = 5000;
+
 function Bookings() {
     const [customerName, setCustomerName] = useState('');
     const [email, setEmail] = useState('');
@@ -13,9 +16,6 @@ function Bookings() {
     
     const navigate = useNavigate(); 
 
-    // The RENDER_API_URL is no longer needed here, but kept for context if you use it elsewhere.
-    // const RENDER_API_URL = 'https://project-r50m.onrender.com';
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -26,6 +26,10 @@ function Bookings() {
             return;
         }
 
+        // --- NEW: Calculate Total Price ---
+        const totalPrice = BASE_PRICE_PER_PERSON * guests;
+        // ----------------------------------
+
         const bookingData = {
             customerName,
             email: userEmail,
@@ -34,14 +38,14 @@ function Bookings() {
             date,
             guests,
             paymentMethod,
+            totalPrice: totalPrice, // CRITICAL: Pass the calculated total
             status: 'Pending' 
         };
 
-        // --- CRITICAL FIX: Save Booking Data to LocalStorage for Payment Screen ---
+        // Save Booking Data to LocalStorage for Payment Screen
         localStorage.setItem('tempBookingData', JSON.stringify(bookingData)); 
         
-        // Redirect to the new payment confirmation screen
-        alert("Redirecting to payment submission...");
+        alert(`Package Price: ${totalPrice.toLocaleString()} BDT. Redirecting to payment submission...`);
         navigate('/payment-confirm'); 
     };
 
@@ -84,7 +88,7 @@ function Bookings() {
                     <option value="Bank Transfer">Bank Transfer</option>
                 </select>
 
-                <button type="submit" style={styles.button}>Proceed to Payment</button>
+                <button type="submit" style={styles.button}>Proceed to Payment ({BASE_PRICE_PER_PERSON * guests} BDT)</button>
             </form>
         </div>
     );
