@@ -35,9 +35,9 @@ function PaymentScreen() {
         // Final booking object including payment details
         const finalBookingData = {
             ...bookingDetails,
-            senderPhone: senderPhone, // Added sender phone for manual verification
-            transactionId: transactionId, // Added transaction ID
-            status: 'Pending' // Final status before admin approval
+            senderPhone: senderPhone, 
+            transactionId: transactionId, 
+            status: 'Pending' 
         };
 
         // --- Step 2: Make the final API call to save the booking ---
@@ -76,9 +76,9 @@ function PaymentScreen() {
     
     // Determine the payment number/account based on the selected method
     let paymentNumber = '';
-    if (bookingDetails.paymentMethod === 'bKash') paymentNumber = '017XXXXXXXX (Merchant)'; // Replace with your number
-    if (bookingDetails.paymentMethod === 'Nagad') paymentNumber = '018XXXXXXXX (Personal)'; // Replace with your number
-    if (bookingDetails.paymentMethod === 'Bank Transfer') paymentNumber = 'Account: 1234567890 (Bank: ABC Bank)'; // Replace with your account details
+    if (bookingDetails.paymentMethod === 'bKash') paymentNumber = '01700000000 (Merchant)'; 
+    if (bookingDetails.paymentMethod === 'Nagad') paymentNumber = '01800000000 (Personal)'; 
+    if (bookingDetails.paymentMethod === 'Bank Transfer') paymentNumber = 'Account: 1234567890 (Bank: ABC Bank)'; 
     
 
     return (
@@ -86,7 +86,8 @@ function PaymentScreen() {
             <h2 style={{textAlign: 'center'}}>Complete Your Payment</h2>
             
             <div style={styles.paymentBox}>
-                {/* --- DYNAMIC PRICE DISPLAY --- */}
+                
+                {/* --- FIX: DYNAMIC PRICE DISPLAY IS HERE --- */}
                 <h3 style={styles.totalDisplay}>
                     Total Amount Due: {bookingDetails.totalPrice.toLocaleString()} BDT
                 </h3>
@@ -152,6 +153,7 @@ const styles = {
         margin: '10px 0',
         fontWeight: 'bold',
     },
+    // --- STYLES FOR PRICE DISPLAY ---
     totalDisplay: {
         fontSize: '28px',
         color: '#ff5722',
@@ -162,6 +164,7 @@ const styles = {
         color: '#555',
         marginBottom: '20px',
     },
+    // --------------------------------
     form: { display: 'flex', flexDirection: 'column' },
     label: { marginTop: '15px', marginBottom: '5px', fontWeight: 'bold', color: '#333' },
     input: { padding: '10px', marginBottom: '15px', borderRadius: '5px', border: '1px solid #ddd', fontSize: '16px' },
