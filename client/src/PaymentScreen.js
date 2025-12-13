@@ -126,7 +126,7 @@ function PaymentScreen() {
                     type="tel" 
                     value={senderPhone} 
                     onChange={(e) => setSenderPhone(e.target.value)} 
-                    placeholder="E.g., 017XXXXXXXX"
+                    placeholder="E.g., 01XXXXXXXXX"
                     required 
                     style={styles.input} 
                 />
