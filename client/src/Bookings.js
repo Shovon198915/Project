@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // <-- Imported useEffect
 import { useNavigate } from 'react-router-dom'; 
-import loginBg from './images/img1.jpg'; 
 
 // --- CRITICAL FIX: Define price per person based on destination ---
 const DESTINATION_PRICES = {
@@ -10,13 +9,12 @@ const DESTINATION_PRICES = {
     "Sajek Valley": 7000,
     "Sundarbans": 9000,
     "Bandarban": 6500,
-    "Default": 5000 // Fallback price
+    "Default": 5000 
 };
 // -------------------------------------------------------------------
 
 function Bookings() {
     const [customerName, setCustomerName] = useState('');
-    const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [destination, setDestination] = useState('');
     const [date, setDate] = useState('');
@@ -24,10 +22,20 @@ function Bookings() {
     const [paymentMethod, setPaymentMethod] = useState('bKash');
     
     const navigate = useNavigate(); 
+    const isLoggedIn = localStorage.getItem('token'); 
+
+    // NEW: Check if the user is logged in immediately upon component load
+    useEffect(() => {
+        if (!isLoggedIn) {
+            alert("You must log in to access the booking form.");
+            navigate('/login');
+        }
+    }, [isLoggedIn, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        
+        // Final check before saving data for payment screen (redundant due to useEffect, but safe)
         const userEmail = localStorage.getItem('userEmail');
         if (!userEmail) {
             alert("Please log in to make a booking.");
@@ -42,13 +50,12 @@ function Bookings() {
 
         const bookingData = {
             customerName,
-            email: userEmail,
+            email: userEmail, // Stored email is used here
             phone,
             destination,
             date,
             guests,
             paymentMethod,
-            // CRITICAL: Pass BOTH the total price and the individual price
             pricePerPerson: pricePerPerson,
             totalPrice: totalPrice, 
             status: 'Pending' 
@@ -61,9 +68,12 @@ function Bookings() {
         navigate('/payment-confirm'); 
     };
 
-    // Calculate the current display price for the button
     const currentPrice = (DESTINATION_PRICES[destination] || DESTINATION_PRICES["Default"]) * guests;
 
+    // Show loading state while redirecting non-logged-in users
+    if (!isLoggedIn) {
+        return <h2 style={{textAlign: 'center', marginTop: '50px'}}>Redirecting to Login...</h2>;
+    }
 
     return (
         <div style={styles.container}>
@@ -80,11 +90,9 @@ function Bookings() {
                 <select value={destination} onChange={(e) => setDestination(e.target.value)} required style={styles.input}>
                     <option value="">Select a Destination</option>
                     
-                    {/* --- All 6 DESTINATIONS --- */}
                     {Object.keys(DESTINATION_PRICES).filter(d => d !== 'Default').map(d => (
                          <option key={d} value={d}>{d} ({DESTINATION_PRICES[d].toLocaleString()} BDT/person)</option>
                     ))}
-                    {/* -------------------------- */}
                     
                 </select>
 

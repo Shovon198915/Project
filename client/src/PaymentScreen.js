@@ -8,6 +8,7 @@ function PaymentScreen() {
     const navigate = useNavigate();
 
     const RENDER_API_URL = 'https://project-r50m.onrender.com';
+    const token = localStorage.getItem('token'); // Get the token
 
     useEffect(() => {
         const tempBookingData = localStorage.getItem('tempBookingData');
@@ -26,6 +27,12 @@ function PaymentScreen() {
             alert("Error: Booking details missing. Please restart the booking process.");
             return;
         }
+        
+        if (!token) {
+            alert("Session expired. Please log in again.");
+            navigate('/login');
+            return;
+        }
 
         const finalBookingData = {
             ...bookingDetails,
@@ -37,7 +44,11 @@ function PaymentScreen() {
         try {
             const res = await fetch(`${RENDER_API_URL}/api/bookings`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    // CRITICAL FIX: Send the token for authentication
+                    'Authorization': `Bearer ${token}` 
+                },
                 body: JSON.stringify(finalBookingData),
             });
             
@@ -52,7 +63,8 @@ function PaymentScreen() {
                 navigate('/my-bookings'); 
             } else {
                 const errorData = await res.json();
-                alert("Submission Failed: " + (errorData.message || "Server error."));
+                // This will now catch 401 Unauthorized errors from the server
+                alert("Submission Failed: " + (errorData.message || "You may need to log in again."));
             }
         } catch (err) {
             console.error("Network error during final submission:", err);
@@ -64,9 +76,11 @@ function PaymentScreen() {
         return <h2 style={{textAlign: 'center', marginTop: '50px'}}>Loading Payment...</h2>;
     }
     
+    // ... (rest of the component remains the same, displaying form)
+    
     let paymentNumber = '';
-    if (bookingDetails.paymentMethod === 'bKash') paymentNumber = '01711223344 (Merchant)'; 
-    if (bookingDetails.paymentMethod === 'Nagad') paymentNumber = '01855667788 (Personal)'; 
+    if (bookingDetails.paymentMethod === 'bKash') paymentNumber = '017XXXXXXXX (Merchant)'; 
+    if (bookingDetails.paymentMethod === 'Nagad') paymentNumber = '018XXXXXXXX (Personal)'; 
     if (bookingDetails.paymentMethod === 'Bank Transfer') paymentNumber = 'Account: 1234567890 (Bank: ABC Bank)'; 
     
     const pricePerPerson = bookingDetails.pricePerPerson || 0;
