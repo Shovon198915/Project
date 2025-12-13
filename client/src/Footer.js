@@ -5,13 +5,13 @@ function Footer() {
         <div style={styles.footer}>
             <div style={styles.container}>
                 <div style={styles.section}>
-                    <h3>Smart Tour Plan Pro</h3>
+                    <h3>Smart Tour Plan</h3>
                     <p>Your trusted travel partner in Bangladesh.</p>
                 </div>
                 <div style={styles.section}>
                     <h4>Contact</h4>
                     <p>📞 +880 1700 000000</p>
-                    <p>📧 support@smarttourplanpro.com</p>
+                    <p>📧 support@smarttourplan.com</p>
                     <p>📍 Dhaka, Bangladesh</p>
                 </div>
                 <div style={styles.section}>
