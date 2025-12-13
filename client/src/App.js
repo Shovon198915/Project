@@ -28,7 +28,7 @@ function Home() {
             {/* HERO SECTION */}
             <div style={styles.hero}>
                 <div style={styles.heroOverlay}>
-                    <h1 style={{ fontSize: '50px', margin: '0' }}>Welcome to Travelloop</h1>
+                    <h1 style={{ fontSize: '50px', margin: '0' }}>Welcome to Smart Tour Plan Pro</h1>
                     <p style={{ fontSize: '20px', marginTop: '10px' }}>Your Personal Travel Companion in Bangladesh</p>
                     <Link to="/destinations">
                         <button style={styles.heroButton}>Explore Destinations</button>
@@ -73,7 +73,7 @@ function App() {
         <Router>
             <div style={{ fontFamily: 'Arial, sans-serif' }}>
                 <nav style={styles.navbar}>
-                    <h2 style={styles.h2}>Travelloop</h2>
+                    <h2 style={styles.h2}>Smart Tour Plan Pro</h2>
                     
                     <div style={styles.navLinks}> 
                         <Link to="/" style={styles.link}>Home</Link>

@@ -88,7 +88,7 @@ app.post('/api/login', async (req, res) => {
 
         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
         
-        const isAdmin = user.email === 'admin@travelloop.com'; 
+        const isAdmin = user.email === 'adminmondol@gmail.com'; 
 
         res.json({ message: "Login Successful", token, user: { isAdmin: isAdmin } });
     } catch (err) {
