@@ -12,7 +12,6 @@ function AdminDashboard() {
     // Check if the user is an Admin
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
 
-    // Function to fetch all bookings (runs every time the component loads)
     const fetchBookings = async () => {
         if (!isAdmin) {
             setLoading(false);
@@ -21,6 +20,13 @@ function AdminDashboard() {
 
         try {
             const res = await fetch(`${RENDER_API_URL}/api/bookings/all`);
+            
+            if (!res.ok) {
+                // Handle HTTP errors
+                const errorText = await res.text();
+                throw new Error(`HTTP error! Status: ${res.status}. Response: ${errorText.substring(0, 50)}...`);
+            }
+            
             const data = await res.json();
             
             // Sort to show Pending bookings first
@@ -32,8 +38,12 @@ function AdminDashboard() {
 
             setBookings(sortedBookings);
         } catch (err) {
-            console.error("Failed to fetch bookings:", err);
-            alert("Failed to fetch bookings. Check server status.");
+            console.error("Failed to fetch bookings:", err.message);
+            
+            // IMPROVED ALERT MESSAGE for server sleep
+            const alertMessage = "Failed to fetch bookings. Your Render backend server might be asleep, or the API route is broken. Please visit your backend URL (in a new tab) to wake it up, and then refresh this page.";
+            alert(alertMessage);
+            
         } finally {
             setLoading(false);
         }

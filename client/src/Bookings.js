@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
-import loginBg from './images/img1.jpg'; 
+import loginBg from './images/img1.jpg'; // Assuming this import is still in your project
 
 // --- CRITICAL FIX: Define price per person based on destination ---
 const DESTINATION_PRICES = {
     "Cox's Bazar": 6000, 
-    "Saint Martin": 8000, // Based on your requirement
+    "Saint Martin": 8000, 
     "Sylhet": 5500,
     "Sajek Valley": 7000,
     "Sundarbans": 9000,
@@ -48,10 +48,9 @@ function Bookings() {
             date,
             guests,
             paymentMethod,
-            // --- CRITICAL: Pass BOTH the total price and the individual price ---
+            // CRITICAL: Pass BOTH the total price and the individual price
             pricePerPerson: pricePerPerson,
             totalPrice: totalPrice, 
-            // ------------------------------------------------------------------
             status: 'Pending' 
         };
 
@@ -61,6 +60,10 @@ function Bookings() {
         alert(`Package Price: ${totalPrice.toLocaleString()} BDT. Redirecting to payment submission...`);
         navigate('/payment-confirm'); 
     };
+
+    // Calculate the current display price for the button
+    const currentPrice = (DESTINATION_PRICES[destination] || DESTINATION_PRICES["Default"]) * guests;
+
 
     return (
         <div style={styles.container}>
@@ -99,7 +102,7 @@ function Bookings() {
                 </select>
 
                 <button type="submit" style={styles.button}>
-                    Proceed to Payment ({ (DESTINATION_PRICES[destination] || DESTINATION_PRICES["Default"]) * guests} BDT)
+                    Proceed to Payment ({currentPrice.toLocaleString()} BDT)
                 </button>
             </form>
         </div>

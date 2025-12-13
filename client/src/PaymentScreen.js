@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// Note: BASE_PRICE_PER_PERSON is no longer needed here, but keeping it for context consistency 
-// in the styles/display if needed. We rely on bookingDetails.pricePerPerson for the correct value.
-
 function PaymentScreen() {
     const [senderPhone, setSenderPhone] = useState('');
     const [transactionId, setTransactionId] = useState('');
@@ -71,8 +68,8 @@ function PaymentScreen() {
     
     // Determine the payment number/account based on the selected method
     let paymentNumber = '';
-    if (bookingDetails.paymentMethod === 'bKash') paymentNumber = '01700000000 (Merchant)'; 
-    if (bookingDetails.paymentMethod === 'Nagad') paymentNumber = '01800000000 (Personal)'; 
+    if (bookingDetails.paymentMethod === 'bKash') paymentNumber = '017XXXXXXXX (Merchant)'; 
+    if (bookingDetails.paymentMethod === 'Nagad') paymentNumber = '018XXXXXXXX (Personal)'; 
     if (bookingDetails.paymentMethod === 'Bank Transfer') paymentNumber = 'Account: 1234567890 (Bank: ABC Bank)'; 
     
     // Use the calculated values passed from Bookings.js
